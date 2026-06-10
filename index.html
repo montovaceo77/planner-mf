@@ -208,7 +208,6 @@
 
     <!-- Tarjeta -->
     <div id="g-tarjeta">
-      <div class="ciclo-banner" id="ciclo-banner"></div>
       <div id="tarjeta-list"></div>
     </div>
 
@@ -663,39 +662,73 @@ function renderGastos() {
 }
 
 function renderTarjeta() {
-  const { inicio, fin } = cicloActual();
-  const ck = cicloKey(inicio.toISOString().split('T')[0]);
-  const gastosCiclo = tarjeta.filter(t => (t.Ciclo||cicloKey(String(t.Fecha).split('T')[0]||String(t.Fecha))) === ck);
-  const total = gastosCiclo.reduce((s, t) => s + Number(t.Valor||0), 0);
+  const hoy = new Date();
 
-  const mesCorte = new Date(fin.getFullYear(), fin.getMonth() + 1, 1);
-  const mesPago = mesCorte.toLocaleDateString('es-CO', {month:'long'});
+  // Ciclo actual
+  const { inicio: inicioAct, fin: finAct } = cicloActual();
+  const ckAct = cicloKey(inicioAct.toISOString().split('T')[0]);
 
-  document.getElementById('ciclo-banner').innerHTML = `
-    <div class="ciclo-row">
-      <div><div class="ciclo-label">CICLO ACTUAL</div><div class="ciclo-valor">${fmt(total)}</div></div>
-      <div style="text-align:right"><div class="ciclo-label">GASTADO EN EL CICLO</div></div>
-    </div>
-    <div class="ciclo-fechas">${inicio.toLocaleDateString('es-CO',{day:'numeric',month:'short'})} — ${fin.toLocaleDateString('es-CO',{day:'numeric',month:'short'})}</div>
-    <div class="pago-alerta">Pagar antes del 3 de ${mesPago}</div>`;
+  // Ciclo anterior (15 del mes pasado al 14 de este mes)
+  const inicioAnt = new Date(inicioAct.getFullYear(), inicioAct.getMonth() - 1, 15);
+  const finAnt    = new Date(inicioAct.getFullYear(), inicioAct.getMonth(), 14);
+  const ckAnt     = cicloKey(inicioAnt.toISOString().split('T')[0]);
 
-  const tl = document.getElementById('tarjeta-list');
-  const sorted = [...gastosCiclo].sort((a,b) => String(b.Fecha).localeCompare(String(a.Fecha)));
-  if (!sorted.length) { tl.innerHTML = '<div class="empty">Sin gastos en este ciclo</div>'; return; }
-  tl.innerHTML = sorted.map(t => {
-    const reembolso = t.Reembolso_Nestor && t.Reembolso_Nestor !== 'No' ? t.Reembolso_Nestor : '';
-    return `
-    <div class="mov-card">
-      <div class="mov-dot gas"></div>
-      <div class="mov-body">
-        <div class="mov-desc">${t.Descripcion||''}</div>
-        <div class="mov-meta">${String(t.Fecha).split('T')[0]||t.Fecha}</div>
-        ${reembolso?`<div class="mov-reembolso">Reembolso Néstor · ${reembolso}</div>`:''}
+  // El ciclo anterior se paga el 3 del mes actual — si aún no ha pasado, lo mostramos
+  const fechaPagoAnt = new Date(hoy.getFullYear(), hoy.getMonth(), 3);
+  const anteriorPendiente = hoy <= fechaPagoAnt;
+
+  function getKey(t) { return t.Ciclo || cicloKey(String(t.Fecha).split('T')[0] || String(t.Fecha)); }
+
+  const gastosAct = tarjeta.filter(t => getKey(t) === ckAct);
+  const gastosAnt = anteriorPendiente ? tarjeta.filter(t => getKey(t) === ckAnt) : [];
+
+  const totalAct = gastosAct.reduce((s, t) => s + Number(t.Valor||0), 0);
+  const totalAnt = gastosAnt.reduce((s, t) => s + Number(t.Valor||0), 0);
+
+  const mesPagoAct = new Date(finAct.getFullYear(), finAct.getMonth() + 1, 1).toLocaleDateString('es-CO', {month:'long'});
+  const mesPagoAnt = new Date(finAnt.getFullYear(), finAnt.getMonth() + 1, 1).toLocaleDateString('es-CO', {month:'long'});
+
+  function tarjetaCards(lista) {
+    if (!lista.length) return '<div class="empty">Sin gastos en este ciclo</div>';
+    return [...lista].sort((a,b) => String(b.Fecha).localeCompare(String(a.Fecha))).map(t => {
+      const reembolso = t.Reembolso_Nestor && t.Reembolso_Nestor !== 'No' ? t.Reembolso_Nestor : '';
+      return `<div class="mov-card">
+        <div class="mov-dot gas"></div>
+        <div class="mov-body">
+          <div class="mov-desc">${t.Descripcion||''}</div>
+          <div class="mov-meta">${String(t.Fecha).split('T')[0]||t.Fecha}</div>
+          ${reembolso?`<div class="mov-reembolso">Reembolso Néstor · ${reembolso}</div>`:''}
+        </div>
+        <div class="mov-valor gas">${fmt(t.Valor)}</div>
+        <button class="del-btn" data-deltarjeta="${t.ID}" title="Eliminar">×</button>
+      </div>`;
+    }).join('');
+  }
+
+  let html = `
+    <div class="ciclo-banner">
+      <div class="ciclo-row">
+        <div><div class="ciclo-label">CICLO ACTUAL</div><div class="ciclo-valor">${fmt(totalAct)}</div></div>
       </div>
-      <div class="mov-valor gas">${fmt(t.Valor)}</div>
-      <button class="del-btn" data-deltarjeta="${t.ID}" title="Eliminar">×</button>
-    </div>`}).join('');
-  tl.querySelectorAll('[data-deltarjeta]').forEach(el => el.addEventListener('click', () => deleteTarjeta(el.dataset.deltarjeta)));
+      <div class="ciclo-fechas">${inicioAct.toLocaleDateString('es-CO',{day:'numeric',month:'short'})} — ${finAct.toLocaleDateString('es-CO',{day:'numeric',month:'short'})}</div>
+      <div class="pago-alerta">Pagar antes del 3 de ${mesPagoAct}</div>
+    </div>
+    ${tarjetaCards(gastosAct)}`;
+
+  if (anteriorPendiente && gastosAnt.length) {
+    html += `
+    <div class="ciclo-banner" style="margin-top:1rem;border-color:#f0c8cc">
+      <div class="ciclo-row">
+        <div><div class="ciclo-label">CICLO ANTERIOR · PENDIENTE DE PAGO</div><div class="ciclo-valor" style="font-size:20px">${fmt(totalAnt)}</div></div>
+      </div>
+      <div class="ciclo-fechas">${inicioAnt.toLocaleDateString('es-CO',{day:'numeric',month:'short'})} — ${finAnt.toLocaleDateString('es-CO',{day:'numeric',month:'short'})}</div>
+      <div class="pago-alerta">Pagar antes del 3 de ${mesPagoAnt}</div>
+    </div>
+    ${tarjetaCards(gastosAnt)}`;
+  }
+
+  document.getElementById('tarjeta-list').innerHTML = html;
+  document.getElementById('tarjeta-list').querySelectorAll('[data-deltarjeta]').forEach(el => el.addEventListener('click', () => deleteTarjeta(el.dataset.deltarjeta)));
 }
 
 function renderCuentas() {
