@@ -673,11 +673,21 @@ function renderTarjeta() {
   const finAnt    = new Date(inicioAct.getFullYear(), inicioAct.getMonth(), 14);
   const ckAnt     = cicloKey(inicioAnt.toISOString().split('T')[0]);
 
-  // El ciclo anterior se paga el 3 del mes actual — si aún no ha pasado, lo mostramos
-  const fechaPagoAnt = new Date(hoy.getFullYear(), hoy.getMonth(), 3);
-  const anteriorPendiente = hoy <= fechaPagoAnt;
+  // El ciclo anterior se paga el 3 del mes siguiente a su fin
+  const mesPagoAntD = new Date(finAnt.getFullYear(), finAnt.getMonth() + 1, 3);
+  const anteriorPendiente = hoy <= mesPagoAntD;
 
-  function getKey(t) { return t.Ciclo || cicloKey(String(t.Fecha).split('T')[0] || String(t.Fecha)); }
+  function getKey(t) {
+    if (t.Ciclo && String(t.Ciclo).match(/^\d{4}-\d{2}$/)) return t.Ciclo;
+    const fecha = String(t.Fecha||'').split('T')[0].trim();
+    if (!fecha) return '';
+    // Handle DD/MM/YYYY from Sheets
+    if (fecha.includes('/')) {
+      const parts = fecha.split('/');
+      if (parts.length === 3) return cicloKey(parts[2]+'-'+parts[1].padStart(2,'0')+'-'+parts[0].padStart(2,'0'));
+    }
+    return cicloKey(fecha);
+  }
 
   const gastosAct = tarjeta.filter(t => getKey(t) === ckAct);
   const gastosAnt = anteriorPendiente ? tarjeta.filter(t => getKey(t) === ckAnt) : [];
