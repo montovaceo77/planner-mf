@@ -25,6 +25,9 @@
     --personal:   #B4A8C4;
     --personal-bg:#EEE9F5;
     --personal-text:#5A4878;
+    --flore:      #A89070;
+    --flore-bg:   #F2EBE3;
+    --flore-text: #6B4F2E;
     --alta:       #C4848F;
     --alta-bg:    #F9EBED;
     --media:      #C4A87A;
@@ -60,7 +63,7 @@
     color: var(--ink);
     letter-spacing: 0.02em;
   }
-  .logo span { color: var(--rose-deep); font-style: italic; }
+  .logo span { color: var(--rose-deep); }
   .header-date {
     font-size: 12px;
     color: var(--ink-soft);
@@ -139,6 +142,7 @@
   .cat-montova { background: var(--rose-light); color: var(--rose-dark); }
   .cat-ciclo   { background: var(--ciclo-bg);   color: var(--ciclo-text); }
   .cat-personal{ background: var(--personal-bg); color: var(--personal-text); }
+  .cat-flore   { background: var(--flore-bg);    color: var(--flore-text); }
   .pri-tag {
     font-size: 11px;
     padding: 2px 9px;
@@ -326,7 +330,7 @@
 <div class="header">
   <div class="header-inner">
     <div class="header-top">
-      <div class="logo">Planner <span>MF</span></div>
+      <div class="logo">Planner <span>MARIA FERNANDA</span></div>
       <div class="header-date" id="hdate"></div>
     </div>
     <div class="stats-row">
@@ -344,6 +348,7 @@
     <button class="fb" data-f="montova">Montova</button>
     <button class="fb" data-f="ciclo">Ciclo</button>
     <button class="fb" data-f="personal">Personal</button>
+    <button class="fb" data-f="flore">Flore&Serena</button>
     <button class="fb" data-f="alta">Alta prioridad</button>
   </div>
   <div id="task-list"></div>
@@ -365,6 +370,7 @@
           <option value="Montova">Montova</option>
           <option value="Ciclo">Ciclo</option>
           <option value="Personal">Personal</option>
+          <option value="Flore&Serena">Flore&Serena</option>
         </select>
       </div>
       <div class="field">
@@ -494,6 +500,7 @@ function render() {
   else if (filter === 'montova')   vis = tasks.filter(t => (t.Categoria||'').toLowerCase() === 'montova');
   else if (filter === 'ciclo')     vis = tasks.filter(t => (t.Categoria||'').toLowerCase() === 'ciclo');
   else if (filter === 'personal')  vis = tasks.filter(t => (t.Categoria||'').toLowerCase() === 'personal');
+  else if (filter === 'flore')     vis = tasks.filter(t => (t.Categoria||'').toLowerCase().includes('flore'));
   else if (filter === 'alta')      vis = tasks.filter(t => (t.Prioridad||'').toLowerCase() === 'alta');
 
   const tl = document.getElementById('task-list');
@@ -505,7 +512,7 @@ function render() {
   tl.innerHTML = vis.map(t => {
     const id = t.ID;
     const isDone = (t.Estado||'').toLowerCase() === 'lista';
-    const cat = (t.Categoria||'personal').toLowerCase();
+    const cat = (t.Categoria||'personal').toLowerCase().includes('flore') ? 'flore' : (t.Categoria||'personal').toLowerCase();
     const pri = (t.Prioridad||'media').toLowerCase();
     const dl = deadlineLabel(t.Deadline);
     const e = expanded[id];
