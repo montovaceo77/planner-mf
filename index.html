@@ -479,7 +479,10 @@ async function deleteTask(id) {
 
 function deadlineLabel(dl) {
   if (!dl) return '';
-  const d = new Date(dl + 'T12:00:00');
+  const parts = String(dl).split('-');
+  if (parts.length !== 3) return '';
+  const d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+  if (isNaN(d.getTime())) return '';
   const today = new Date(); today.setHours(0,0,0,0);
   const diff = Math.round((d - today) / 86400000);
   const label = d.toLocaleDateString('es-CO', {day:'2-digit', month:'short'});
