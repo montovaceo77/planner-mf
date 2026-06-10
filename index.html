@@ -176,6 +176,17 @@
     flex-shrink: 0;
   }
   .del-btn:hover { color: var(--rose-dark); }
+  .edit-btn {
+    font-size: 13px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    background: none; border: none;
+    padding: 0 0 0 4px;
+    line-height: 1;
+    flex-shrink: 0;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .edit-btn:hover { color: var(--rose-dark); }
 
   /* Notes area */
   .notes-box {
@@ -403,6 +414,25 @@
   </div>
 </div>
 
+<div class="overlay" id="edit-overlay">
+  <div class="modal">
+    <div class="modal-title">Editar tarea</div>
+    <div class="field">
+      <label>TAREA</label>
+      <input id="e-titulo" placeholder="Nombre de la tarea" />
+    </div>
+    <div class="field">
+      <label>DEADLINE</label>
+      <input type="date" id="e-deadline" />
+    </div>
+    <input type="hidden" id="e-id" />
+    <div class="modal-actions">
+      <button class="btn-secondary" id="edit-cancel">Cancelar</button>
+      <button class="btn-primary" id="edit-save">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -432,49 +462,60 @@ async function fetchTasks() {
   render();
 }
 
-async function addTask(d) {
-  showToast('Guardando...');
-  try {
-    await fetch(WS, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'addTask', ...d })
-    });
-    showToast('Tarea guardada ✓');
-    await fetchTasks();
-  } catch(e) { showToast('Error al guardar'); }
+function sendToServer(body) {
+  fetch(WS, { method: 'POST', body: JSON.stringify(body) }).catch(() => {});
 }
 
-async function updateNotes(id, notas) {
-  try {
-    await fetch(WS, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'updateTask', id, field: 'notasOnly', value: notas })
-    });
-    showToast('Avances guardados ✓');
-  } catch(e) { showToast('Error al guardar'); }
+function addTask(d) {
+  const tempId = Date.now();
+  const today = new Date().toLocaleDateString('es-CO', {day:'2-digit', month:'2-digit', year:'numeric'});
+  tasks.unshift({
+    ID: tempId,
+    Titulo: d.titulo,
+    Categoria: d.categoria,
+    Prioridad: d.prioridad,
+    Deadline: d.deadline,
+    'Asignado por': d.asignadoPor,
+    Notas: d.notas || '',
+    Estado: 'pendiente',
+    'Fecha creacion': today,
+    _temp: true
+  });
+  render();
+  showToast('Tarea guardada ✓');
+  sendToServer({ action: 'addTask', ...d, _tempId: tempId });
+  setTimeout(fetchTasks, 3000);
 }
 
-async function toggleDone(id, current) {
+function editTask(id, titulo, deadline) {
+  const t = tasks.find(t => String(t.ID) === String(id));
+  if (t) { t.Titulo = titulo; t.Deadline = deadline; }
+  render();
+  showToast('Tarea actualizada ✓');
+  sendToServer({ action: 'updateTask', id, field: 'editTarea', titulo, deadline });
+}
+
+function updateNotes(id, notas) {
+  const t = tasks.find(t => String(t.ID) === String(id));
+  if (t) t.Notas = notas;
+  showToast('Avances guardados ✓');
+  sendToServer({ action: 'updateTask', id, field: 'notasOnly', value: notas });
+}
+
+function toggleDone(id, current) {
   const newVal = current === 'lista' ? 'pendiente' : 'lista';
-  try {
-    await fetch(WS, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'updateTask', id, field: 'estado', value: newVal })
-    });
-    await fetchTasks();
-  } catch(e) { showToast('Error'); }
+  const t = tasks.find(t => String(t.ID) === String(id));
+  if (t) t.Estado = newVal;
+  render();
+  sendToServer({ action: 'updateTask', id, field: 'estado', value: newVal });
 }
 
-async function deleteTask(id) {
+function deleteTask(id) {
   if (!confirm('¿Eliminar esta tarea?')) return;
-  try {
-    await fetch(WS, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'deleteTask', id })
-    });
-    showToast('Eliminada');
-    await fetchTasks();
-  } catch(e) { showToast('Error'); }
+  tasks = tasks.filter(t => String(t.ID) !== String(id));
+  render();
+  showToast('Eliminada');
+  sendToServer({ action: 'deleteTask', id });
 }
 
 function deadlineLabel(dl) {
@@ -535,6 +576,7 @@ function render() {
           </div>
           <button class="tog-btn" data-id="${id}">${e ? '▲ cerrar' : '▾ avances / notas'}</button>
         </div>
+        <button class="edit-btn" data-edit="${id}" data-titulo="${(t.Titulo||'').replace(/"/g,'&quot;')}" data-deadline="${t.Deadline||''}" title="Editar">✎</button>
         <button class="del-btn" data-del="${id}" title="Eliminar">×</button>
       </div>
       ${e ? `<div class="notes-box">
@@ -551,6 +593,14 @@ function render() {
   });
   tl.querySelectorAll('.tog-btn').forEach(el => {
     el.addEventListener('click', () => { expanded[el.dataset.id] = !expanded[el.dataset.id]; render(); });
+  });
+  tl.querySelectorAll('[data-edit]').forEach(el => {
+    el.addEventListener('click', () => {
+      document.getElementById('e-id').value = el.dataset.edit;
+      document.getElementById('e-titulo').value = el.dataset.titulo;
+      document.getElementById('e-deadline').value = el.dataset.deadline;
+      document.getElementById('edit-overlay').classList.add('open');
+    });
   });
   tl.querySelectorAll('[data-del]').forEach(el => {
     el.addEventListener('click', () => deleteTask(el.dataset.del));
@@ -583,10 +633,10 @@ document.getElementById('btn-cancel').addEventListener('click', () => {
 document.getElementById('overlay').addEventListener('click', function(e) {
   if (e.target === this) this.classList.remove('open');
 });
-document.getElementById('btn-save').addEventListener('click', async () => {
+document.getElementById('btn-save').addEventListener('click', () => {
   const titulo = document.getElementById('f-titulo').value.trim();
   if (!titulo) { showToast('Escribe el nombre de la tarea'); return; }
-  await addTask({
+  addTask({
     titulo,
     categoria: document.getElementById('f-cat').value,
     prioridad: document.getElementById('f-pri').value,
@@ -599,6 +649,22 @@ document.getElementById('btn-save').addEventListener('click', async () => {
   document.getElementById('f-asignado').value = '';
   document.getElementById('f-notas').value = '';
   document.getElementById('f-deadline').value = '';
+});
+
+// Edit modal
+document.getElementById('edit-cancel').addEventListener('click', () => {
+  document.getElementById('edit-overlay').classList.remove('open');
+});
+document.getElementById('edit-overlay').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+});
+document.getElementById('edit-save').addEventListener('click', () => {
+  const id = document.getElementById('e-id').value;
+  const titulo = document.getElementById('e-titulo').value.trim();
+  if (!titulo) { showToast('El nombre no puede estar vacío'); return; }
+  const deadline = document.getElementById('e-deadline').value;
+  document.getElementById('edit-overlay').classList.remove('open');
+  editTask(id, titulo, deadline);
 });
 
 fetchTasks();
