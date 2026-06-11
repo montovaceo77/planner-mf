@@ -344,7 +344,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const WS = 'https://script.google.com/macros/s/AKfycby7KDDoLP5NPN_S_fyZARXcyjwO6AfOSb1bMJH8-O_VHZbYpvDiaR8plmHVSTCp7aKwtw/exec';
+const WS = 'https://script.google.com/macros/s/AKfycbzxzC9cl5hcwfgSVw6ieEfeXF9k-dgi5sVg2cs4BAe_U8auJPer5_ZyQ3HbQYBTNXufwA/exec';
 
 let tasks = [], tarjeta = [], cuentas = [];
 let taskFilter = 'todas', expanded = {};
@@ -678,10 +678,10 @@ function renderTarjeta() {
   const anteriorPendiente = hoy <= mesPagoAntD;
 
   function getKey(t) {
-    if (t.Ciclo && String(t.Ciclo).match(/^\d{4}-\d{2}$/)) return t.Ciclo;
-    const fecha = String(t.Fecha||'').split('T')[0].trim();
+    const ciclo = String(t.Ciclo||t.ciclo||'').trim();
+    if (ciclo.match(/^\d{4}-\d{2}$/)) return ciclo;
+    const fecha = String(t.Fecha||t.fecha||'').split('T')[0].trim();
     if (!fecha) return '';
-    // Handle DD/MM/YYYY from Sheets
     if (fecha.includes('/')) {
       const parts = fecha.split('/');
       if (parts.length === 3) return cicloKey(parts[2]+'-'+parts[1].padStart(2,'0')+'-'+parts[0].padStart(2,'0'));
