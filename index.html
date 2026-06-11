@@ -208,6 +208,8 @@
 
     <!-- Tarjeta -->
     <div id="g-tarjeta">
+      <div id="ciclo-banner-wrap"></div>
+      <button class="save-btn" id="btn-abono" style="margin-bottom:1rem;display:block">+ Registrar abono</button>
       <div id="tarjeta-list"></div>
     </div>
 
@@ -341,12 +343,27 @@
   </div>
 </div>
 
+<!-- Modal abono tarjeta -->
+<div class="overlay" id="overlay-abono">
+  <div class="modal">
+    <div class="modal-title">Registrar abono</div>
+    <div class="field-row">
+      <div class="field"><label>VALOR ($)</label><input type="number" id="a-valor" placeholder="0" /></div>
+      <div class="field"><label>FECHA</label><input type="date" id="a-fecha" /></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="btn-cancel-abono">Cancelar</button>
+      <button class="btn-primary" id="btn-save-abono">Guardar abono</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-const WS = 'https://script.google.com/macros/s/AKfycbzxzC9cl5hcwfgSVw6ieEfeXF9k-dgi5sVg2cs4BAe_U8auJPer5_ZyQ3HbQYBTNXufwA/exec';
+const WS = 'https://script.google.com/macros/s/AKfycbzMyxP-wKLXqCoWoxdGMwKu7fO6anvG5vSD8H6JpCidhuIwv6gE9O7um1-SREib7Q6KNQ/exec';
 
-let tasks = [], tarjeta = [], cuentas = [];
+let tasks = [], tarjeta = [], cuentas = [], abonos = [];
 let taskFilter = 'todas', expanded = {};
 let gastosTab = 'tarjeta', cuentaTab = 'Confiar';
 let activeNav = 'planner';
@@ -403,7 +420,7 @@ document.querySelectorAll('.nav-btn').forEach(b => {
     document.getElementById('sec-gastos').classList.toggle('on', activeNav === 'gastos');
     document.getElementById('planner-stats').style.display = activeNav === 'planner' ? 'flex' : 'none';
     if (activeNav === 'gastos' && !tarjeta.length && !cuentas.length) {
-      fetchTarjeta(); fetchCuentas();
+      fetchTarjeta(); fetchCuentas(); fetchAbonos();
     }
     if (activeNav === 'gastos') renderGastos();
   });
@@ -606,6 +623,47 @@ document.querySelectorAll('.fb').forEach(b => {
 });
 
 // ── GASTOS ────────────────────────────────────────────
+async function fetchAbonos() {
+  try {
+    const r = await fetch(WS + '?action=getAbonos');
+    const data = await r.json();
+    abonos = Array.isArray(data) ? data : [];
+  } catch(e) { abonos = []; }
+  renderTarjeta();
+}
+
+function addAbono(d) {
+  const tempId = Date.now();
+  abonos.push({ ID: tempId, Fecha: d.fecha, Valor: d.valor });
+  renderTarjeta();
+  showToast('Abono registrado ✓');
+  sendToServer({ action: 'addAbono', ...d });
+  setTimeout(fetchAbonos, 4000);
+}
+
+function deleteAbono(id) {
+  if (!confirm('¿Eliminar este abono?')) return;
+  abonos = abonos.filter(a => String(a.ID) !== String(id));
+  renderTarjeta();
+  sendToServer({ action: 'deleteAbono', id });
+}
+
+// Abono modal
+document.getElementById('btn-abono').addEventListener('click', () => {
+  document.getElementById('a-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('overlay-abono').classList.add('open');
+});
+document.getElementById('btn-cancel-abono').addEventListener('click', () => document.getElementById('overlay-abono').classList.remove('open'));
+document.getElementById('overlay-abono').addEventListener('click', function(e) { if(e.target===this) this.classList.remove('open'); });
+document.getElementById('btn-save-abono').addEventListener('click', () => {
+  const valor = document.getElementById('a-valor').value;
+  const fecha = document.getElementById('a-fecha').value;
+  if (!valor || !fecha) { showToast('Completa todos los campos'); return; }
+  addAbono({ valor: Number(valor), fecha });
+  document.getElementById('overlay-abono').classList.remove('open');
+  document.getElementById('a-valor').value = '';
+});
+
 async function fetchTarjeta() {
   try {
     const r = await fetch(WS + '?action=getTarjeta');
@@ -678,15 +736,26 @@ function renderTarjeta() {
   const anteriorPendiente = hoy <= mesPagoAntD;
 
   function getKey(t) {
-    const ciclo = String(t.Ciclo||t.ciclo||'').trim();
-    if (ciclo.match(/^\d{4}-\d{2}$/)) return ciclo;
-    const fecha = String(t.Fecha||t.fecha||'').split('T')[0].trim();
+    const fecha = String(t.Fecha || t.fecha || '').trim();
     if (!fecha) return '';
-    if (fecha.includes('/')) {
-      const parts = fecha.split('/');
-      if (parts.length === 3) return cicloKey(parts[2]+'-'+parts[1].padStart(2,'0')+'-'+parts[0].padStart(2,'0'));
+    // Sheets may return date as a JS Date object serialized
+    // Format: YYYY-MM-DD or DD/MM/YYYY or similar
+    let iso = '';
+    if (fecha.match(/^\d{4}-\d{2}-\d{2}/)) {
+      iso = fecha.substring(0, 10);
+    } else if (fecha.includes('/')) {
+      const p = fecha.split('/');
+      if (p.length === 3 && p[2].length === 4) iso = p[2]+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0');
+      else if (p.length === 3) iso = p[0]+'-'+p[1].padStart(2,'0')+'-'+p[2].padStart(2,'0');
     }
-    return cicloKey(fecha);
+    if (!iso) return '';
+    const parts = iso.split('-');
+    const day = parseInt(parts[2]);
+    const month = parseInt(parts[1]) - 1;
+    const year = parseInt(parts[0]);
+    if (day >= 15) return year + '-' + String(month + 1).padStart(2, '0');
+    if (month === 0) return (year - 1) + '-12';
+    return year + '-' + String(month).padStart(2, '0');
   }
 
   const gastosAct = tarjeta.filter(t => getKey(t) === ckAct);
@@ -715,12 +784,32 @@ function renderTarjeta() {
     }).join('');
   }
 
+  // Abonos del ciclo actual y anterior
+  function abonosDeCiclo(ckInicio, ckFin) {
+    return abonos.filter(a => {
+      const f = String(a.Fecha||a.fecha||'').trim().substring(0,10);
+      if (!f) return false;
+      return f >= ckInicio && f <= ckFin;
+    }).reduce((s,a) => s + Number(a.Valor||a.valor||0), 0);
+  }
+
+  const inicioActStr = inicioAct.toISOString().split('T')[0];
+  const finActStr    = finAct.toISOString().split('T')[0];
+  const inicioAntStr = inicioAnt.toISOString().split('T')[0];
+  const finAntStr    = finAnt.toISOString().split('T')[0];
+
+  const abonadoAct = abonosDeCiclo(inicioActStr, finActStr);
+  const abonadoAnt = abonosDeCiclo(inicioAntStr, finAntStr);
+  const pendienteAct = Math.max(0, totalAct - abonadoAct);
+  const pendienteAnt = Math.max(0, totalAnt - abonadoAnt);
+
   let html = `
     <div class="ciclo-banner">
       <div class="ciclo-row">
         <div><div class="ciclo-label">CICLO ACTUAL</div><div class="ciclo-valor">${fmt(totalAct)}</div></div>
       </div>
       <div class="ciclo-fechas">${inicioAct.toLocaleDateString('es-CO',{day:'numeric',month:'short'})} — ${finAct.toLocaleDateString('es-CO',{day:'numeric',month:'short'})}</div>
+      ${abonadoAct > 0 ? `<div style="font-size:12px;color:var(--ink-soft);margin-top:6px">Abonado: ${fmt(abonadoAct)} · <strong style="color:var(--rose-dark)">Pendiente: ${fmt(pendienteAct)}</strong></div>` : ''}
       <div class="pago-alerta">Pagar antes del 3 de ${mesPagoAct}</div>
     </div>
     ${tarjetaCards(gastosAct)}`;
@@ -732,11 +821,13 @@ function renderTarjeta() {
         <div><div class="ciclo-label">CICLO ANTERIOR · PENDIENTE DE PAGO</div><div class="ciclo-valor" style="font-size:20px">${fmt(totalAnt)}</div></div>
       </div>
       <div class="ciclo-fechas">${inicioAnt.toLocaleDateString('es-CO',{day:'numeric',month:'short'})} — ${finAnt.toLocaleDateString('es-CO',{day:'numeric',month:'short'})}</div>
+      ${abonadoAnt > 0 ? `<div style="font-size:12px;color:var(--ink-soft);margin-top:6px">Abonado: ${fmt(abonadoAnt)} · <strong style="color:var(--rose-dark)">Pendiente: ${fmt(pendienteAnt)}</strong></div>` : ''}
       <div class="pago-alerta">Pagar antes del 3 de ${mesPagoAnt}</div>
     </div>
     ${tarjetaCards(gastosAnt)}`;
   }
 
+  document.getElementById('ciclo-banner-wrap').innerHTML = '';
   document.getElementById('tarjeta-list').innerHTML = html;
   document.getElementById('tarjeta-list').querySelectorAll('[data-deltarjeta]').forEach(el => el.addEventListener('click', () => deleteTarjeta(el.dataset.deltarjeta)));
 }
