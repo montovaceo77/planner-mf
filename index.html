@@ -6,165 +6,159 @@
 <title>Planner MF</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 <style>
-  :root {
-    --rose:       #E8B4BC;
-    --rose-light: #F5DDE1;
-    --rose-pale:  #FDF0F2;
-    --rose-deep:  #C4848F;
-    --rose-dark:  #9A5C65;
-    --ink:        #3A2C2E;
-    --ink-mid:    #7A5E62;
-    --ink-soft:   #B09498;
-    --cream:      #FBF7F7;
-    --white:      #FFFFFF;
-    --border:     #EDD8DB;
-    --ciclo-bg:   #EAF2EC;
-    --ciclo-text: #3D6B4A;
-    --personal-bg:#EEE9F5;
-    --personal-text:#5A4878;
-    --flore-bg:   #F2EBE3;
-    --flore-text: #6B4F2E;
-    --alta-bg:    #F9EBED;
-    --media-bg:   #F7F0E6;
-    --media:      #C4A87A;
-    --baja-bg:    #EAF2EC;
-    --baja:       #8FAE9A;
-    --ingreso:    #3D6B4A;
-    --ingreso-bg: #EAF2EC;
-    --gasto-bg:   #F9EBED;
-    --gasto:      #9A5C65;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; font-size: 14px; line-height: 1.6; padding-bottom: 70px; }
+:root {
+  --rose: #E8B4BC;
+  --rose-light: #F5DDE1;
+  --rose-pale: #FDF0F2;
+  --rose-deep: #C4848F;
+  --rose-dark: #9A5C65;
+  --ink: #3A2C2E;
+  --ink-mid: #7A5E62;
+  --ink-soft: #B09498;
+  --cream: #FBF7F7;
+  --white: #FFFFFF;
+  --border: #EDD8DB;
+  --ciclo-bg: #EAF2EC;
+  --ciclo-text: #3D6B4A;
+  --personal-bg: #EEE9F5;
+  --personal-text: #5A4878;
+  --flore-bg: #F2EBE3;
+  --flore-text: #6B4F2E;
+  --alta-bg: #F9EBED;
+  --media-bg: #F7F0E6;
+  --media: #C4A87A;
+  --baja-bg: #EAF2EC;
+  --baja: #8FAE9A;
+  --ingreso: #3D6B4A;
+  --ingreso-bg: #EAF2EC;
+  --gasto-bg: #F9EBED;
+  --gasto: #9A5C65;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; font-size: 14px; line-height: 1.6; padding-bottom: 70px; }
 
-  /* Header */
-  .header { background: var(--white); border-bottom: 1px solid var(--border); padding: 1.25rem 1.25rem 0.75rem; position: sticky; top: 0; z-index: 100; }
-  .header-inner { max-width: 680px; margin: 0 auto; }
-  .header-top { display: flex; align-items: baseline; justify-content: space-between; }
-  .logo { font-size: 18px; font-weight: 500; color: var(--ink); letter-spacing: 0.02em; }
-  .logo span { color: var(--rose-deep); }
-  .header-date { font-size: 12px; color: var(--ink-soft); }
-  .stats-row { display: flex; gap: 1.5rem; margin-top: 0.75rem; }
-  .stat { display: flex; align-items: baseline; gap: 5px; }
-  .stat-n { font-size: 20px; font-weight: 300; color: var(--rose-deep); }
-  .stat-l { font-size: 11px; color: var(--ink-soft); }
+.header { background: var(--white); border-bottom: 1px solid var(--border); padding: 1.25rem 1.25rem 0.75rem; position: sticky; top: 0; z-index: 100; }
+.header-inner { max-width: 680px; margin: 0 auto; }
+.header-top { display: flex; align-items: baseline; justify-content: space-between; }
+.logo { font-size: 18px; font-weight: 500; color: var(--ink); }
+.logo span { color: var(--rose-deep); }
+.header-date { font-size: 12px; color: var(--ink-soft); }
+.stats-row { display: flex; gap: 1.5rem; margin-top: 0.75rem; }
+.stat { display: flex; align-items: baseline; gap: 5px; }
+.stat-n { font-size: 20px; font-weight: 300; color: var(--rose-deep); }
+.stat-l { font-size: 11px; color: var(--ink-soft); }
 
-  /* Bottom nav */
-  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); border-top: 1px solid var(--border); display: flex; z-index: 200; }
-  .nav-btn { flex: 1; padding: 12px 0 14px; font-size: 12px; font-family: 'DM Sans', sans-serif; color: var(--ink-soft); background: none; border: none; cursor: pointer; letter-spacing: 0.02em; }
-  .nav-btn.on { color: var(--rose-deep); font-weight: 500; border-top: 2px solid var(--rose-deep); }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); border-top: 1px solid var(--border); display: flex; z-index: 200; }
+.nav-btn { flex: 1; padding: 12px 0 14px; font-size: 12px; font-family: 'DM Sans', sans-serif; color: var(--ink-soft); background: none; border: none; cursor: pointer; }
+.nav-btn.on { color: var(--rose-deep); font-weight: 500; border-top: 2px solid var(--rose-deep); }
 
-  /* Main */
-  .main { max-width: 680px; margin: 0 auto; padding: 1.25rem 1.25rem 1rem; }
-  .section { display: none; }
-  .section.on { display: block; }
+.main { max-width: 680px; margin: 0 auto; padding: 1.25rem 1.25rem 1rem; }
+.section { display: none; }
+.section.on { display: block; }
 
-  /* Filters */
-  .filter-bar { display: flex; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap; }
-  .fb { font-size: 12px; font-family: 'DM Sans', sans-serif; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--white); color: var(--ink-mid); cursor: pointer; transition: all 0.15s; }
-  .fb:hover { border-color: var(--rose); color: var(--rose-dark); }
-  .fb.on { background: var(--rose-light); border-color: var(--rose); color: var(--rose-dark); font-weight: 500; }
+.filter-bar { display: flex; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.fb { font-size: 12px; font-family: 'DM Sans', sans-serif; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--white); color: var(--ink-mid); cursor: pointer; }
+.fb.on { background: var(--rose-light); border-color: var(--rose); color: var(--rose-dark); font-weight: 500; }
 
-  /* Task cards */
-  .task-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 8px; transition: border-color 0.15s, box-shadow 0.15s; }
-  .task-card:hover { border-color: var(--rose); box-shadow: 0 2px 12px rgba(196,132,143,0.08); }
-  .task-card.done { opacity: 0.5; }
-  .card-top { display: flex; align-items: flex-start; gap: 10px; }
-  .chk { width: 18px; height: 18px; border: 1.5px solid var(--rose); border-radius: 50%; cursor: pointer; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; font-size: 10px; color: transparent; }
-  .chk.on { background: var(--rose); color: white; }
-  .task-body { flex: 1; min-width: 0; }
-  .task-title { font-size: 14px; font-weight: 500; color: var(--ink); word-break: break-word; }
-  .task-title.done { text-decoration: line-through; color: var(--ink-soft); }
-  .task-meta { display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
-  .cat-tag { font-size: 11px; padding: 2px 9px; border-radius: 10px; font-weight: 500; }
-  .cat-montova  { background: var(--rose-light); color: var(--rose-dark); }
-  .cat-ciclo    { background: var(--ciclo-bg);   color: var(--ciclo-text); }
-  .cat-personal { background: var(--personal-bg); color: var(--personal-text); }
-  .cat-flore    { background: var(--flore-bg);   color: var(--flore-text); }
-  .pri-tag { font-size: 11px; padding: 2px 9px; border-radius: 10px; }
-  .pri-alta  { background: var(--alta-bg);  color: var(--rose-dark); }
-  .pri-media { background: var(--media-bg); color: var(--media); }
-  .pri-baja  { background: var(--baja-bg);  color: var(--baja); }
-  .deadline-tag { font-size: 11px; color: var(--ink-soft); }
-  .deadline-tag.vencida { color: #b94040; }
-  .deadline-tag.pronto  { color: var(--media); }
-  .asignado-tag { font-size: 11px; color: var(--ink-soft); }
-  .tog-btn { font-size: 12px; color: var(--ink-soft); cursor: pointer; margin-top: 7px; display: inline-block; border: none; background: none; font-family: 'DM Sans', sans-serif; padding: 0; }
-  .tog-btn:hover { color: var(--rose-dark); }
-  .del-btn { font-size: 16px; color: var(--ink-soft); cursor: pointer; background: none; border: none; padding: 0 0 0 6px; line-height: 1; flex-shrink: 0; }
-  .del-btn:hover { color: var(--rose-dark); }
-  .edit-btn { font-size: 13px; color: var(--ink-soft); cursor: pointer; background: none; border: none; padding: 0 0 0 4px; line-height: 1; flex-shrink: 0; font-family: 'DM Sans', sans-serif; }
-  .edit-btn:hover { color: var(--rose-dark); }
-  .notes-box { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; }
-  .notes-box textarea { width: 100%; font-size: 13px; color: var(--ink); background: var(--rose-pale); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; resize: vertical; min-height: 72px; font-family: 'DM Sans', sans-serif; outline: none; line-height: 1.6; }
-  .notes-box textarea:focus { border-color: var(--rose); }
-  .notes-actions { display: flex; justify-content: flex-end; margin-top: 6px; }
-  .save-btn { font-size: 12px; padding: 5px 16px; border: 1px solid var(--rose); border-radius: 20px; background: transparent; color: var(--rose-dark); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
-  .save-btn:hover { background: var(--rose-light); }
+.task-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 8px; }
+.task-card:hover { border-color: var(--rose); }
+.task-card.done { opacity: 0.5; }
+.card-top { display: flex; align-items: flex-start; gap: 10px; }
+.chk { width: 18px; height: 18px; border: 1.5px solid var(--rose); border-radius: 50%; cursor: pointer; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: transparent; }
+.chk.on { background: var(--rose); color: white; }
+.task-body { flex: 1; min-width: 0; }
+.task-title { font-size: 14px; font-weight: 500; color: var(--ink); word-break: break-word; }
+.task-title.done { text-decoration: line-through; color: var(--ink-soft); }
+.task-meta { display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
+.cat-tag { font-size: 11px; padding: 2px 9px; border-radius: 10px; font-weight: 500; }
+.cat-montova { background: var(--rose-light); color: var(--rose-dark); }
+.cat-ciclo { background: var(--ciclo-bg); color: var(--ciclo-text); }
+.cat-personal { background: var(--personal-bg); color: var(--personal-text); }
+.cat-flore { background: var(--flore-bg); color: var(--flore-text); }
+.pri-tag { font-size: 11px; padding: 2px 9px; border-radius: 10px; }
+.pri-alta { background: var(--alta-bg); color: var(--rose-dark); }
+.pri-media { background: var(--media-bg); color: var(--media); }
+.pri-baja { background: var(--baja-bg); color: var(--baja); }
+.deadline-tag { font-size: 11px; color: var(--ink-soft); }
+.deadline-tag.vencida { color: #b94040; }
+.deadline-tag.pronto { color: var(--media); }
+.asignado-tag { font-size: 11px; color: var(--ink-soft); }
+.tog-btn { font-size: 12px; color: var(--ink-soft); cursor: pointer; margin-top: 7px; display: inline-block; border: none; background: none; font-family: 'DM Sans', sans-serif; padding: 0; }
+.tog-btn:hover { color: var(--rose-dark); }
+.del-btn { font-size: 16px; color: var(--ink-soft); cursor: pointer; background: none; border: none; padding: 0 0 0 6px; line-height: 1; flex-shrink: 0; }
+.del-btn:hover { color: var(--rose-dark); }
+.edit-btn { font-size: 13px; color: var(--ink-soft); cursor: pointer; background: none; border: none; padding: 0 0 0 4px; line-height: 1; flex-shrink: 0; font-family: 'DM Sans', sans-serif; }
+.edit-btn:hover { color: var(--rose-dark); }
+.notes-box { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; }
+.notes-box textarea { width: 100%; font-size: 13px; color: var(--ink); background: var(--rose-pale); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; resize: vertical; min-height: 72px; font-family: 'DM Sans', sans-serif; outline: none; line-height: 1.6; }
+.notes-box textarea:focus { border-color: var(--rose); }
+.notes-actions { display: flex; justify-content: flex-end; margin-top: 6px; }
+.save-btn { font-size: 12px; padding: 5px 16px; border: 1px solid var(--rose); border-radius: 20px; background: transparent; color: var(--rose-dark); cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.save-btn:hover { background: var(--rose-light); }
 
-  /* Gastos */
-  .gastos-tabs { display: flex; gap: 8px; margin-bottom: 1.25rem; }
-  .gtab { flex: 1; padding: 8px; font-size: 13px; font-family: 'DM Sans', sans-serif; border: 1px solid var(--border); border-radius: 10px; background: var(--white); color: var(--ink-mid); cursor: pointer; text-align: center; transition: all 0.15s; }
-  .gtab.on { background: var(--rose-light); border-color: var(--rose); color: var(--rose-dark); font-weight: 500; }
+.gastos-tabs { display: flex; gap: 8px; margin-bottom: 1.25rem; }
+.gtab { flex: 1; padding: 8px; font-size: 12px; font-family: 'DM Sans', sans-serif; border: 1px solid var(--border); border-radius: 10px; background: var(--white); color: var(--ink-mid); cursor: pointer; text-align: center; }
+.gtab.on { background: var(--rose-light); border-color: var(--rose); color: var(--rose-dark); font-weight: 500; }
 
-  .ciclo-banner { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
-  .ciclo-row { display: flex; justify-content: space-between; align-items: baseline; }
-  .ciclo-label { font-size: 12px; color: var(--ink-soft); letter-spacing: 0.03em; }
-  .ciclo-valor { font-size: 24px; font-weight: 300; color: var(--rose-deep); }
-  .ciclo-fechas { font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
-  .pago-alerta { margin-top: 10px; padding: 8px 12px; background: var(--alta-bg); border-radius: 8px; font-size: 13px; color: var(--rose-dark); font-weight: 500; }
+.ciclo-banner { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+.ciclo-label { font-size: 12px; color: var(--ink-soft); letter-spacing: 0.03em; }
+.ciclo-valor { font-size: 24px; font-weight: 300; color: var(--rose-deep); margin: 4px 0; }
+.ciclo-fechas { font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
+.pago-alerta { margin-top: 10px; padding: 8px 12px; background: var(--alta-bg); border-radius: 8px; font-size: 13px; color: var(--rose-dark); font-weight: 500; }
 
-  .cuenta-tabs { display: flex; gap: 8px; margin-bottom: 1rem; }
-  .ctab { flex: 1; padding: 7px; font-size: 12px; font-family: 'DM Sans', sans-serif; border: 1px solid var(--border); border-radius: 8px; background: var(--white); color: var(--ink-mid); cursor: pointer; text-align: center; }
-  .ctab.on { background: var(--rose-light); border-color: var(--rose); color: var(--rose-dark); font-weight: 500; }
+.cuenta-tabs { display: flex; gap: 8px; margin-bottom: 1rem; }
+.ctab { flex: 1; padding: 7px; font-size: 12px; font-family: 'DM Sans', sans-serif; border: 1px solid var(--border); border-radius: 8px; background: var(--white); color: var(--ink-mid); cursor: pointer; text-align: center; }
+.ctab.on { background: var(--rose-light); border-color: var(--rose); color: var(--rose-dark); font-weight: 500; }
 
-  .resumen-row { display: flex; gap: 8px; margin-bottom: 1rem; }
-  .resumen-card { flex: 1; background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; text-align: center; }
-  .resumen-n { font-size: 18px; font-weight: 300; }
-  .resumen-l { font-size: 11px; color: var(--ink-soft); margin-top: 2px; }
-  .resumen-n.ing { color: var(--ingreso); }
-  .resumen-n.gas { color: var(--gasto); }
-  .resumen-n.sal { color: var(--ink); }
+.resumen-row { display: flex; gap: 8px; margin-bottom: 1rem; }
+.resumen-card { flex: 1; background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; text-align: center; }
+.resumen-n { font-size: 18px; font-weight: 300; }
+.resumen-l { font-size: 11px; color: var(--ink-soft); margin-top: 2px; }
+.resumen-n.ing { color: var(--ingreso); }
+.resumen-n.gas { color: var(--gasto); }
 
-  .mov-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 0.875rem 1.25rem; margin-bottom: 7px; display: flex; align-items: center; gap: 10px; }
-  .mov-card:hover { border-color: var(--rose); }
-  .mov-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .mov-dot.ing { background: var(--ingreso); }
-  .mov-dot.gas { background: var(--gasto); }
-  .mov-body { flex: 1; min-width: 0; }
-  .mov-desc { font-size: 14px; font-weight: 500; color: var(--ink); }
-  .mov-meta { font-size: 11px; color: var(--ink-soft); margin-top: 2px; }
-  .mov-reembolso { font-size: 11px; color: var(--flore-text); background: var(--flore-bg); padding: 1px 7px; border-radius: 8px; display: inline-block; margin-top: 3px; }
-  .mov-valor { font-size: 15px; font-weight: 500; flex-shrink: 0; }
-  .mov-valor.ing { color: var(--ingreso); }
-  .mov-valor.gas { color: var(--gasto); }
+.mov-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 0.875rem 1.25rem; margin-bottom: 7px; display: flex; align-items: center; gap: 10px; }
+.mov-card:hover { border-color: var(--rose); }
+.mov-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.mov-dot.ing { background: var(--ingreso); }
+.mov-dot.gas { background: var(--gasto); }
+.mov-body { flex: 1; min-width: 0; }
+.mov-desc { font-size: 14px; font-weight: 500; color: var(--ink); }
+.mov-meta { font-size: 11px; color: var(--ink-soft); margin-top: 2px; }
+.mov-reembolso { font-size: 11px; color: var(--flore-text); background: var(--flore-bg); padding: 1px 7px; border-radius: 8px; display: inline-block; margin-top: 3px; }
+.mov-valor { font-size: 15px; font-weight: 500; flex-shrink: 0; }
+.mov-valor.ing { color: var(--ingreso); }
+.mov-valor.gas { color: var(--gasto); }
 
-  /* FAB */
-  .fab { position: fixed; bottom: 4.5rem; right: 1.25rem; width: 48px; height: 48px; border-radius: 50%; background: var(--rose-deep); color: white; font-size: 24px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(196,132,143,0.35); z-index: 150; transition: transform 0.15s; }
-  .fab:hover { transform: scale(1.07); }
+.nestor-total { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; text-align: center; }
+.nestor-n { font-size: 32px; font-weight: 300; color: var(--rose-deep); margin: 8px 0; }
+.nestor-sub { font-size: 12px; color: var(--ink-soft); margin-bottom: 1rem; }
+.btn-nestor { width: 100%; padding: 11px; background: var(--rose-deep); color: white; border: none; border-radius: 10px; font-size: 14px; font-family: 'DM Sans', sans-serif; cursor: pointer; }
+.btn-nestor:hover { opacity: 0.88; }
+.section-label { font-size: 11px; color: var(--ink-soft); letter-spacing: 0.04em; margin-bottom: 8px; margin-top: 4px; }
 
-  /* Modals */
-  .overlay { display: none; position: fixed; inset: 0; background: rgba(58,44,46,0.35); z-index: 300; align-items: flex-end; justify-content: center; }
-  .overlay.open { display: flex; }
-  .modal { background: var(--white); border-radius: 20px 20px 0 0; padding: 1.5rem 1.25rem 2rem; width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; }
-  .modal-title { font-size: 17px; font-weight: 500; color: var(--ink); margin-bottom: 1.25rem; }
-  .field { margin-bottom: 1rem; }
-  .field label { display: block; font-size: 11px; color: var(--ink-soft); letter-spacing: 0.04em; margin-bottom: 5px; }
-  .field input, .field select, .field textarea { width: 100%; font-size: 14px; font-family: 'DM Sans', sans-serif; color: var(--ink); background: var(--rose-pale); border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; outline: none; transition: border-color 0.15s; }
-  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--rose); }
-  .field textarea { resize: vertical; min-height: 60px; line-height: 1.6; }
-  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .modal-actions { display: flex; gap: 8px; margin-top: 1.25rem; }
-  .btn-primary { flex: 1; padding: 11px; background: var(--rose-deep); color: white; border: none; border-radius: 10px; font-size: 14px; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: opacity 0.15s; }
-  .btn-primary:hover { opacity: 0.88; }
-  .btn-secondary { padding: 11px 20px; background: transparent; color: var(--ink-mid); border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-family: 'DM Sans', sans-serif; cursor: pointer; }
-  .btn-secondary:hover { background: var(--rose-pale); }
+.fab { position: fixed; bottom: 4.5rem; right: 1.25rem; width: 48px; height: 48px; border-radius: 50%; background: var(--rose-deep); color: white; font-size: 24px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(196,132,143,0.35); z-index: 150; }
+.fab:hover { transform: scale(1.07); }
 
-  /* Misc */
-  .empty { text-align: center; padding: 2.5rem 1rem; color: var(--ink-soft); font-size: 14px; }
-  .toast { position: fixed; bottom: 5.5rem; left: 50%; transform: translateX(-50%); background: var(--ink); color: white; font-size: 13px; padding: 8px 18px; border-radius: 20px; opacity: 0; transition: opacity 0.2s; z-index: 500; pointer-events: none; white-space: nowrap; }
-  .toast.show { opacity: 1; }
-  @media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
+.overlay { display: none; position: fixed; inset: 0; background: rgba(58,44,46,0.35); z-index: 300; align-items: flex-end; justify-content: center; }
+.overlay.open { display: flex; }
+.modal { background: var(--white); border-radius: 20px 20px 0 0; padding: 1.5rem 1.25rem 2rem; width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; }
+.modal-title { font-size: 17px; font-weight: 500; color: var(--ink); margin-bottom: 1.25rem; }
+.field { margin-bottom: 1rem; }
+.field label { display: block; font-size: 11px; color: var(--ink-soft); letter-spacing: 0.04em; margin-bottom: 5px; }
+.field input, .field select, .field textarea { width: 100%; font-size: 14px; font-family: 'DM Sans', sans-serif; color: var(--ink); background: var(--rose-pale); border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; outline: none; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--rose); }
+.field textarea { resize: vertical; min-height: 60px; line-height: 1.6; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modal-actions { display: flex; gap: 8px; margin-top: 1.25rem; }
+.btn-primary { flex: 1; padding: 11px; background: var(--rose-deep); color: white; border: none; border-radius: 10px; font-size: 14px; font-family: 'DM Sans', sans-serif; cursor: pointer; }
+.btn-primary:hover { opacity: 0.88; }
+.btn-secondary { padding: 11px 20px; background: transparent; color: var(--ink-mid); border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-family: 'DM Sans', sans-serif; cursor: pointer; }
+
+.empty { text-align: center; padding: 2.5rem 1rem; color: var(--ink-soft); font-size: 14px; }
+.toast { position: fixed; bottom: 5.5rem; left: 50%; transform: translateX(-50%); background: var(--ink); color: white; font-size: 13px; padding: 8px 18px; border-radius: 20px; opacity: 0; transition: opacity 0.2s; z-index: 500; pointer-events: none; white-space: nowrap; }
+.toast.show { opacity: 1; }
+@media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -184,8 +178,6 @@
 </div>
 
 <div class="main">
-
-  <!-- PLANNER -->
   <div class="section on" id="sec-planner">
     <div class="filter-bar">
       <button class="fb on" data-f="todas">Todas</button>
@@ -193,28 +185,23 @@
       <button class="fb" data-f="montova">Montova</button>
       <button class="fb" data-f="ciclo">Ciclo</button>
       <button class="fb" data-f="personal">Personal</button>
-      <button class="fb" data-f="flore">Flore&Serena</button>
+      <button class="fb" data-f="flore">Flore&amp;Serena</button>
       <button class="fb" data-f="alta">Alta prioridad</button>
     </div>
     <div id="task-list"></div>
   </div>
 
-  <!-- GASTOS -->
   <div class="section" id="sec-gastos">
     <div class="gastos-tabs">
       <button class="gtab on" data-g="tarjeta">Visa Platinum</button>
-      <button class="gtab" data-g="cuentas">Confiar & Bancolombia</button>
-      <button class="gtab" data-g="nestor">Néstor</button>
+      <button class="gtab" data-g="cuentas">Confiar &amp; Bancolombia</button>
+      <button class="gtab" data-g="nestor">Nestor</button>
     </div>
-
-    <!-- Tarjeta -->
     <div id="g-tarjeta">
-      <div id="ciclo-banner-wrap"></div>
+      <div id="tarjeta-banners"></div>
       <button class="save-btn" id="btn-abono" style="margin-bottom:1rem;display:block">+ Registrar abono</button>
       <div id="tarjeta-list"></div>
     </div>
-
-    <!-- Cuentas -->
     <div id="g-cuentas" style="display:none">
       <div class="cuenta-tabs">
         <button class="ctab on" data-c="Confiar">Confiar</button>
@@ -223,19 +210,14 @@
       <div class="resumen-row" id="resumen-row"></div>
       <div id="cuentas-list"></div>
     </div>
-
-    <!-- Néstor -->
     <div id="g-nestor" style="display:none">
       <div id="nestor-content"></div>
     </div>
   </div>
-
 </div>
 
-<!-- FAB -->
 <button class="fab" id="fab">+</button>
 
-<!-- Bottom nav -->
 <nav class="bottom-nav">
   <button class="nav-btn on" data-nav="planner">Planner</button>
   <button class="nav-btn" data-nav="gastos">Gastos</button>
@@ -245,14 +227,14 @@
 <div class="overlay" id="overlay-tarea">
   <div class="modal">
     <div class="modal-title">Nueva tarea</div>
-    <div class="field"><label>TAREA</label><input id="f-titulo" placeholder="¿Qué hay que hacer?" /></div>
+    <div class="field"><label>TAREA</label><input id="f-titulo" placeholder="Que hay que hacer?" /></div>
     <div class="field-row">
-      <div class="field"><label>CATEGORÍA</label>
+      <div class="field"><label>CATEGORIA</label>
         <select id="f-cat">
           <option value="Montova">Montova</option>
           <option value="Ciclo">Ciclo</option>
           <option value="Personal">Personal</option>
-          <option value="Flore&Serena">Flore&Serena</option>
+          <option value="Flore&amp;Serena">Flore&amp;Serena</option>
         </select>
       </div>
       <div class="field"><label>PRIORIDAD</label>
@@ -265,9 +247,9 @@
     </div>
     <div class="field-row">
       <div class="field"><label>DEADLINE</label><input type="date" id="f-deadline" /></div>
-      <div class="field"><label>ASIGNADO POR</label><input id="f-asignado" placeholder="Néstor, Juan Pedro..." /></div>
+      <div class="field"><label>ASIGNADO POR</label><input id="f-asignado" placeholder="Nestor, Juan Pedro..." /></div>
     </div>
-    <div class="field"><label>NOTAS INICIALES (opcional)</label><textarea id="f-notas" placeholder="Contexto, detalles..."></textarea></div>
+    <div class="field"><label>NOTAS (opcional)</label><textarea id="f-notas" placeholder="Contexto, detalles..."></textarea></div>
     <div class="modal-actions">
       <button class="btn-secondary" id="btn-cancel-tarea">Cancelar</button>
       <button class="btn-primary" id="btn-save-tarea">Guardar tarea</button>
@@ -289,16 +271,16 @@
   </div>
 </div>
 
-<!-- Modal nuevo gasto tarjeta -->
+<!-- Modal gasto tarjeta -->
 <div class="overlay" id="overlay-tarjeta">
   <div class="modal">
     <div class="modal-title">Gasto Visa Platinum</div>
-    <div class="field"><label>DESCRIPCIÓN</label><input id="t-desc" placeholder="¿En qué?" /></div>
+    <div class="field"><label>DESCRIPCION</label><input id="t-desc" placeholder="En que?" /></div>
     <div class="field-row">
       <div class="field"><label>VALOR ($)</label><input type="number" id="t-valor" placeholder="0" /></div>
       <div class="field"><label>FECHA</label><input type="date" id="t-fecha" /></div>
     </div>
-    <div class="field"><label>REEMBOLSO NÉSTOR</label>
+    <div class="field"><label>REEMBOLSO NESTOR</label>
       <select id="t-reembolso">
         <option value="No">No</option>
         <option value="Si">Si, pendiente</option>
@@ -308,43 +290,6 @@
     <div class="modal-actions">
       <button class="btn-secondary" id="btn-cancel-tarjeta">Cancelar</button>
       <button class="btn-primary" id="btn-save-tarjeta">Guardar</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal nuevo movimiento cuenta -->
-<div class="overlay" id="overlay-cuenta">
-  <div class="modal">
-    <div class="modal-title">Nuevo movimiento</div>
-    <div class="field"><label>DESCRIPCIÓN</label><input id="c-desc" placeholder="¿Qué es?" /></div>
-    <div class="field-row">
-      <div class="field"><label>VALOR ($)</label><input type="number" id="c-valor" placeholder="0" /></div>
-      <div class="field"><label>FECHA</label><input type="date" id="c-fecha" /></div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label>TIPO</label>
-        <select id="c-tipo">
-          <option value="Ingreso">Ingreso</option>
-          <option value="Gasto">Gasto</option>
-        </select>
-      </div>
-      <div class="field"><label>CUENTA</label>
-        <select id="c-cuenta">
-          <option value="Confiar">Confiar</option>
-          <option value="Bancolombia">Bancolombia</option>
-        </select>
-      </div>
-    </div>
-    <div class="field"><label>REEMBOLSO NÉSTOR</label>
-      <select id="c-reembolso">
-        <option value="No">No</option>
-        <option value="Si">Si, pendiente</option>
-        <option value="Recibido">Si, ya recibido</option>
-      </select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-secondary" id="btn-cancel-cuenta">Cancelar</button>
-      <button class="btn-primary" id="btn-save-cuenta">Guardar</button>
     </div>
   </div>
 </div>
@@ -364,24 +309,72 @@
   </div>
 </div>
 
+<!-- Modal movimiento cuenta -->
+<div class="overlay" id="overlay-cuenta">
+  <div class="modal">
+    <div class="modal-title">Nuevo movimiento</div>
+    <div class="field"><label>DESCRIPCION</label><input id="c-desc" placeholder="Que es?" /></div>
+    <div class="field-row">
+      <div class="field"><label>VALOR ($)</label><input type="number" id="c-valor" placeholder="0" /></div>
+      <div class="field"><label>FECHA</label><input type="date" id="c-fecha" /></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>TIPO</label>
+        <select id="c-tipo">
+          <option value="Ingreso">Ingreso</option>
+          <option value="Gasto">Gasto</option>
+        </select>
+      </div>
+      <div class="field"><label>CUENTA</label>
+        <select id="c-cuenta">
+          <option value="Confiar">Confiar</option>
+          <option value="Bancolombia">Bancolombia</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>REEMBOLSO NESTOR</label>
+      <select id="c-reembolso">
+        <option value="No">No</option>
+        <option value="Si">Si, pendiente</option>
+        <option value="Recibido">Si, ya recibido</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="btn-cancel-cuenta">Cancelar</button>
+      <button class="btn-primary" id="btn-save-cuenta">Guardar</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-const WS = 'https://script.google.com/macros/s/AKfycbyng3lyMb0qA-XVoSkNkbtWCNjuUaQUcAGQ9HN2jwRy8aR8-rGMqQGMq4Puk9x48VOy/exec';
+var WS = 'https://script.google.com/macros/s/AKfycbyng3lyMb0qA-XVoSkNkbtWCNjuUaQUcAGQ9HN2jwRy8aR8-rGMqQGMq4Puk9x48VOy/exec';
+var tasks = [], tarjeta = [], cuentas = [], abonos = [];
+var taskFilter = 'todas', expanded = {};
+var gastosTab = 'tarjeta', cuentaTab = 'Confiar';
+var activeNav = 'planner';
 
-let tasks = [], tarjeta = [], cuentas = [], abonos = [];
-let taskFilter = 'todas', expanded = {};
-let gastosTab = 'tarjeta', cuentaTab = 'Confiar';
-let activeNav = 'planner';
-
-const now = new Date();
-document.getElementById('hdate').textContent = now.toLocaleDateString('es-CO', {weekday:'long', day:'numeric', month:'long'});
+window.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('hdate').textContent = new Date().toLocaleDateString('es-CO', {weekday:'long', day:'numeric', month:'long'});
+  initNav();
+  initFilters();
+  initTareaModal();
+  initEditModal();
+  initTarjetaModal();
+  initAbonoModal();
+  initCuentaModal();
+  initGastosTabs();
+  initCuentaTabs();
+  initFab();
+  fetchTasks();
+});
 
 function showToast(msg) {
-  const t = document.getElementById('toast');
+  var t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+  setTimeout(function() { t.classList.remove('show'); }, 2000);
 }
 
 function fmt(n) {
@@ -389,333 +382,597 @@ function fmt(n) {
 }
 
 function sendToServer(body) {
-  fetch(WS, { method: 'POST', body: JSON.stringify(body) }).catch(() => {});
+  fetch(WS, {method:'POST', body:JSON.stringify(body)}).catch(function(){});
 }
 
-function cicloActual() {
-  const hoy = new Date();
-  const d = hoy.getDate();
-  let inicio, fin;
-  if (d >= 15) {
-    inicio = new Date(hoy.getFullYear(), hoy.getMonth(), 15);
-    fin = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 14);
-  } else {
-    inicio = new Date(hoy.getFullYear(), hoy.getMonth() - 1, 15);
-    fin = new Date(hoy.getFullYear(), hoy.getMonth(), 14);
+function cicloKey(isoDate) {
+  if (!isoDate) return '';
+  var parts = String(isoDate).split('-');
+  if (parts.length < 3) return '';
+  var day = parseInt(parts[2]);
+  var month = parseInt(parts[1]);
+  var year = parseInt(parts[0]);
+  if (day >= 15) return year + '-' + String(month).padStart(2,'0');
+  if (month === 1) return (year-1) + '-12';
+  return year + '-' + String(month-1).padStart(2,'0');
+}
+
+function getDateISO(val) {
+  if (!val) return '';
+  var s = String(val).trim();
+  if (s.match(/^\d{4}-\d{2}-\d{2}/)) return s.substring(0,10);
+  if (s.includes('/')) {
+    var p = s.split('/');
+    if (p.length === 3 && p[2].length === 4) return p[2]+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0');
   }
-  return { inicio, fin };
+  return s.substring(0,10);
 }
 
-function cicloKey(fecha) {
-  const d = new Date(fecha + 'T12:00:00');
-  if (isNaN(d)) return '';
-  const day = d.getDate();
-  const y = day >= 15 ? d.getFullYear() : (d.getMonth() === 0 ? d.getFullYear() - 1 : d.getFullYear());
-  const m = day >= 15 ? d.getMonth() : (d.getMonth() === 0 ? 11 : d.getMonth() - 1);
-  return y + '-' + String(m + 1).padStart(2, '0');
+function getTaskKey(t) {
+  return cicloKey(getDateISO(t.Fecha || t.fecha || ''));
 }
 
-document.querySelectorAll('.nav-btn').forEach(b => {
-  b.addEventListener('click', function() {
-    activeNav = this.dataset.nav;
-    document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('on'));
-    this.classList.add('on');
-    document.getElementById('sec-planner').classList.toggle('on', activeNav === 'planner');
-    document.getElementById('sec-gastos').classList.toggle('on', activeNav === 'gastos');
-    document.getElementById('planner-stats').style.display = activeNav === 'planner' ? 'flex' : 'none';
-    if (activeNav === 'gastos' && !tarjeta.length && !cuentas.length) {
-      fetchTarjeta(); fetchCuentas(); fetchAbonos();
+function deadlineLabel(dl) {
+  if (!dl) return null;
+  var parts = String(dl).split('-');
+  if (parts.length !== 3) return null;
+  var d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+  if (isNaN(d.getTime())) return null;
+  var today = new Date(); today.setHours(0,0,0,0);
+  var diff = Math.round((d - today) / 86400000);
+  var label = d.toLocaleDateString('es-CO', {day:'2-digit', month:'short'});
+  if (diff < 0) return {text: label + ' · vencida', cls: 'vencida'};
+  if (diff <= 3) return {text: label + ' · pronto', cls: 'pronto'};
+  return {text: label, cls: ''};
+}
+
+function initNav() {
+  document.querySelectorAll('.nav-btn').forEach(function(b) {
+    b.addEventListener('click', function() {
+      activeNav = this.dataset.nav;
+      document.querySelectorAll('.nav-btn').forEach(function(x){ x.classList.remove('on'); });
+      this.classList.add('on');
+      document.getElementById('sec-planner').classList.toggle('on', activeNav === 'planner');
+      document.getElementById('sec-gastos').classList.toggle('on', activeNav === 'gastos');
+      document.getElementById('planner-stats').style.display = activeNav === 'planner' ? 'flex' : 'none';
+      if (activeNav === 'gastos') {
+        if (!tarjeta.length) fetchTarjeta();
+        if (!cuentas.length) fetchCuentas();
+        if (!abonos.length) fetchAbonos();
+        renderGastos();
+      }
+    });
+  });
+}
+
+function initFilters() {
+  document.querySelectorAll('.fb').forEach(function(b) {
+    b.addEventListener('click', function() {
+      taskFilter = this.dataset.f;
+      document.querySelectorAll('.fb').forEach(function(x){ x.classList.remove('on'); });
+      this.classList.add('on');
+      renderTasks();
+    });
+  });
+}
+
+function initGastosTabs() {
+  document.querySelectorAll('.gtab').forEach(function(b) {
+    b.addEventListener('click', function() {
+      gastosTab = this.dataset.g;
+      document.querySelectorAll('.gtab').forEach(function(x){ x.classList.remove('on'); });
+      this.classList.add('on');
+      document.getElementById('g-tarjeta').style.display = gastosTab === 'tarjeta' ? 'block' : 'none';
+      document.getElementById('g-cuentas').style.display = gastosTab === 'cuentas' ? 'block' : 'none';
+      document.getElementById('g-nestor').style.display  = gastosTab === 'nestor'  ? 'block' : 'none';
+      document.getElementById('fab').style.display = gastosTab === 'nestor' ? 'none' : 'flex';
+      renderGastos();
+    });
+  });
+}
+
+function initCuentaTabs() {
+  document.querySelectorAll('.ctab').forEach(function(b) {
+    b.addEventListener('click', function() {
+      cuentaTab = this.dataset.c;
+      document.querySelectorAll('.ctab').forEach(function(x){ x.classList.remove('on'); });
+      this.classList.add('on');
+      renderCuentas();
+    });
+  });
+}
+
+function initFab() {
+  document.getElementById('fab').addEventListener('click', function() {
+    if (activeNav === 'planner') {
+      document.getElementById('overlay-tarea').classList.add('open');
+    } else if (gastosTab === 'tarjeta') {
+      document.getElementById('t-fecha').value = new Date().toISOString().split('T')[0];
+      document.getElementById('overlay-tarjeta').classList.add('open');
+    } else if (gastosTab === 'cuentas') {
+      document.getElementById('c-fecha').value = new Date().toISOString().split('T')[0];
+      document.getElementById('overlay-cuenta').classList.add('open');
     }
-    if (activeNav === 'gastos') renderGastos();
   });
-});
+}
 
-// Gastos tabs
-document.querySelectorAll('.gtab').forEach(b => {
-  b.addEventListener('click', function() {
-    gastosTab = this.dataset.g;
-    document.querySelectorAll('.gtab').forEach(x => x.classList.remove('on'));
-    this.classList.add('on');
-    document.getElementById('g-tarjeta').style.display = gastosTab === 'tarjeta' ? 'block' : 'none';
-    document.getElementById('g-cuentas').style.display = gastosTab === 'cuentas' ? 'block' : 'none';
-    document.getElementById('g-nestor').style.display  = gastosTab === 'nestor'  ? 'block' : 'none';
-    document.getElementById('fab').style.display = gastosTab === 'nestor' ? 'none' : 'flex';
-    renderGastos();
+function closeOverlay(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function initOverlay(id) {
+  document.getElementById(id).addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
   });
-});
+}
 
-document.querySelectorAll('.ctab').forEach(b => {
-  b.addEventListener('click', function() {
-    cuentaTab = this.dataset.c;
-    document.querySelectorAll('.ctab').forEach(x => x.classList.remove('on'));
-    this.classList.add('on');
-    renderCuentas();
-  });
-});
-
-// FAB
-document.getElementById('fab').addEventListener('click', () => {
-  if (activeNav === 'planner') {
-    document.getElementById('overlay-tarea').classList.add('open');
-  } else if (gastosTab === 'tarjeta') {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('t-fecha').value = today;
-    document.getElementById('overlay-tarjeta').classList.add('open');
-  } else {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('c-fecha').value = today;
-    document.getElementById('overlay-cuenta').classList.add('open');
-  }
-});
-
-async function fetchTasks() {
-  try {
-    const r = await fetch(WS + '?action=getTasks');
-    const data = await r.json();
+// PLANNER
+function fetchTasks() {
+  fetch(WS + '?action=getTasks').then(function(r){ return r.json(); }).then(function(data) {
     tasks = Array.isArray(data) ? data : [];
-  } catch(e) { tasks = []; }
-  renderTasks();
+    renderTasks();
+  }).catch(function(){ tasks = []; renderTasks(); });
 }
 
 function addTask(d) {
-  const tempId = Date.now();
-  const today = new Date().toLocaleDateString('es-CO', {day:'2-digit', month:'2-digit', year:'numeric'});
-  tasks.unshift({ ID: tempId, Titulo: d.titulo, Categoria: d.categoria, Prioridad: d.prioridad, Deadline: d.deadline, 'Asignado por': d.asignadoPor, Notas: d.notas || '', Estado: 'pendiente', 'Fecha creacion': today });
+  var tempId = Date.now();
+  var today = new Date().toLocaleDateString('es-CO', {day:'2-digit', month:'2-digit', year:'numeric'});
+  tasks.unshift({ID:tempId, Titulo:d.titulo, Categoria:d.categoria, Prioridad:d.prioridad, Deadline:d.deadline, 'Asignado por':d.asignadoPor, Notas:d.notas||'', Estado:'pendiente', 'Fecha creacion':today});
   renderTasks();
-  showToast('Tarea guardada ');
-  sendToServer({ action: 'addTask', ...d });
-  setTimeout(fetchTasks, 4000);
+  showToast('Tarea guardada');
+  sendToServer({action:'addTask', titulo:d.titulo, categoria:d.categoria, prioridad:d.prioridad, deadline:d.deadline, asignadoPor:d.asignadoPor, notas:d.notas||''});
+  setTimeout(fetchTasks, 5000);
 }
 
 function editTask(id, titulo, deadline) {
-  const t = tasks.find(t => String(t.ID) === String(id));
-  if (t) { t.Titulo = titulo; t.Deadline = deadline; }
+  var t = tasks.find(function(x){ return String(x.ID)===String(id); });
+  if (t) { t.Titulo=titulo; t.Deadline=deadline; }
   renderTasks();
-  showToast('Tarea actualizada ');
-  sendToServer({ action: 'updateTask', id, field: 'editTarea', titulo, deadline });
+  showToast('Actualizada');
+  sendToServer({action:'updateTask', id:id, field:'editTarea', titulo:titulo, deadline:deadline});
 }
 
 function updateNotes(id, notas) {
-  const t = tasks.find(t => String(t.ID) === String(id));
+  var t = tasks.find(function(x){ return String(x.ID)===String(id); });
   if (t) t.Notas = notas;
-  showToast('Avances guardados ');
-  sendToServer({ action: 'updateTask', id, field: 'notasOnly', value: notas });
+  showToast('Avances guardados');
+  sendToServer({action:'updateTask', id:id, field:'notasOnly', value:notas});
 }
 
 function toggleDone(id, current) {
-  const newVal = current === 'lista' ? 'pendiente' : 'lista';
-  const t = tasks.find(t => String(t.ID) === String(id));
+  var newVal = current === 'lista' ? 'pendiente' : 'lista';
+  var t = tasks.find(function(x){ return String(x.ID)===String(id); });
   if (t) t.Estado = newVal;
   renderTasks();
-  sendToServer({ action: 'updateTask', id, field: 'estado', value: newVal });
+  sendToServer({action:'updateTask', id:id, field:'estado', value:newVal});
 }
 
 function deleteTask(id) {
   if (!confirm('Eliminar esta tarea?')) return;
-  tasks = tasks.filter(t => String(t.ID) !== String(id));
+  tasks = tasks.filter(function(x){ return String(x.ID)!==String(id); });
   renderTasks();
-  showToast('Eliminada');
-  sendToServer({ action: 'deleteTask', id });
-}
-
-function deadlineLabel(dl) {
-  if (!dl) return '';
-  const parts = String(dl).split('-');
-  if (parts.length !== 3) return '';
-  const d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
-  if (isNaN(d.getTime())) return '';
-  const today = new Date(); today.setHours(0,0,0,0);
-  const diff = Math.round((d - today) / 86400000);
-  const label = d.toLocaleDateString('es-CO', {day:'2-digit', month:'short'});
-  if (diff < 0) return { text: ' ' + label + '  vencida', cls: 'vencida' };
-  if (diff <= 3) return { text: ' ' + label + '  pronto', cls: 'pronto' };
-  return { text: ' ' + label, cls: '' };
+  sendToServer({action:'deleteTask', id:id});
 }
 
 function renderTasks() {
-  const total = tasks.length;
-  const done = tasks.filter(t => (t.Estado||'').toLowerCase() === 'lista').length;
+  var total = tasks.length;
+  var done = tasks.filter(function(t){ return (t.Estado||'').toLowerCase()==='lista'; }).length;
   document.getElementById('sTotal').textContent = total;
   document.getElementById('sPend').textContent = total - done;
   document.getElementById('sDone').textContent = done;
 
-  let vis = tasks;
-  if (taskFilter === 'pendientes') vis = tasks.filter(t => (t.Estado||'').toLowerCase() !== 'lista');
-  else if (taskFilter === 'montova')  vis = tasks.filter(t => (t.Categoria||'').toLowerCase() === 'montova');
-  else if (taskFilter === 'ciclo')    vis = tasks.filter(t => (t.Categoria||'').toLowerCase() === 'ciclo');
-  else if (taskFilter === 'personal') vis = tasks.filter(t => (t.Categoria||'').toLowerCase() === 'personal');
-  else if (taskFilter === 'flore')    vis = tasks.filter(t => (t.Categoria||'').toLowerCase().includes('flore'));
-  else if (taskFilter === 'alta')     vis = tasks.filter(t => (t.Prioridad||'').toLowerCase() === 'alta');
+  var vis = tasks;
+  if (taskFilter==='pendientes') vis = tasks.filter(function(t){ return (t.Estado||'').toLowerCase()!=='lista'; });
+  else if (taskFilter==='montova')  vis = tasks.filter(function(t){ return (t.Categoria||'').toLowerCase()==='montova'; });
+  else if (taskFilter==='ciclo')    vis = tasks.filter(function(t){ return (t.Categoria||'').toLowerCase()==='ciclo'; });
+  else if (taskFilter==='personal') vis = tasks.filter(function(t){ return (t.Categoria||'').toLowerCase()==='personal'; });
+  else if (taskFilter==='flore')    vis = tasks.filter(function(t){ return (t.Categoria||'').toLowerCase().indexOf('flore')>=0; });
+  else if (taskFilter==='alta')     vis = tasks.filter(function(t){ return (t.Prioridad||'').toLowerCase()==='alta'; });
 
-  const tl = document.getElementById('task-list');
-  if (!vis.length) { tl.innerHTML = '<div class="empty">No hay tareas aqu todava</div>'; return; }
+  var tl = document.getElementById('task-list');
+  if (!vis.length) { tl.innerHTML = '<div class="empty">No hay tareas aqui todavia</div>'; return; }
 
-  tl.innerHTML = vis.map(t => {
-    const id = t.ID;
-    const isDone = (t.Estado||'').toLowerCase() === 'lista';
-    const cat = (t.Categoria||'personal').toLowerCase().includes('flore') ? 'flore' : (t.Categoria||'personal').toLowerCase();
-    const pri = (t.Prioridad||'media').toLowerCase();
-    const dl = deadlineLabel(t.Deadline);
-    const e = expanded[id];
-    const hasNotes = t.Notas && t.Notas.trim().length > 0;
-    return `<div class="task-card${isDone?' done':''}">
-      <div class="card-top">
-        <div class="chk${isDone?' on':''}" data-id="${id}" data-estado="${t.Estado||'pendiente'}">${isDone?'':''}</div>
-        <div class="task-body">
-          <div class="task-title${isDone?' done':''}">${t.Titulo||''}</div>
-          <div class="task-meta">
-            <span class="cat-tag cat-${cat}">${t.Categoria||''}</span>
-            <span class="pri-tag pri-${pri}">${t.Prioridad||''}</span>
-            ${dl?`<span class="deadline-tag ${dl.cls}">${dl.text}</span>`:''}
-            ${t['Asignado por']?`<span class="asignado-tag"> ${t['Asignado por']}</span>`:''}
-            ${hasNotes&&!e?'<span style="font-size:11px;color:var(--ink-soft)"> tiene avances</span>':''}
-          </div>
-          <button class="tog-btn" data-id="${id}">${e?' cerrar':' avances / notas'}</button>
-        </div>
-        <button class="edit-btn" data-edit="${id}" data-titulo="${(t.Titulo||'').replace(/"/g,'&quot;')}" data-deadline="${t.Deadline||''}" title="Editar"></button>
-        <button class="del-btn" data-del="${id}" title="Eliminar"></button>
-      </div>
-      ${e?`<div class="notes-box">
-        <textarea id="nt-${id}" placeholder="Escribe tus avances o notas aqu...">${t.Notas||''}</textarea>
-        <div class="notes-actions"><button class="save-btn" data-saveid="${id}">Guardar avances</button></div>
-      </div>`:''}
-    </div>`;
-  }).join('');
+  var html = '';
+  vis.forEach(function(t) {
+    var id = t.ID;
+    var isDone = (t.Estado||'').toLowerCase()==='lista';
+    var catRaw = (t.Categoria||'personal').toLowerCase();
+    var cat = catRaw.indexOf('flore')>=0 ? 'flore' : catRaw;
+    var pri = (t.Prioridad||'media').toLowerCase();
+    var dl = deadlineLabel(t.Deadline);
+    var e = expanded[id];
+    var hasNotes = t.Notas && t.Notas.trim().length > 0;
+    var tituloEsc = (t.Titulo||'').replace(/"/g,'&quot;');
+    var deadlineEsc = t.Deadline||'';
 
-  tl.querySelectorAll('.chk').forEach(el => el.addEventListener('click', () => toggleDone(el.dataset.id, el.dataset.estado)));
-  tl.querySelectorAll('.tog-btn').forEach(el => el.addEventListener('click', () => { expanded[el.dataset.id]=!expanded[el.dataset.id]; renderTasks(); }));
-  tl.querySelectorAll('[data-edit]').forEach(el => el.addEventListener('click', () => {
-    document.getElementById('e-id').value = el.dataset.edit;
-    document.getElementById('e-titulo').value = el.dataset.titulo;
-    document.getElementById('e-deadline').value = el.dataset.deadline;
-    document.getElementById('overlay-edit').classList.add('open');
-  }));
-  tl.querySelectorAll('[data-del]').forEach(el => el.addEventListener('click', () => deleteTask(el.dataset.del)));
-  tl.querySelectorAll('[data-saveid]').forEach(el => el.addEventListener('click', () => {
-    const ta = document.getElementById('nt-'+el.dataset.saveid);
-    if (ta) updateNotes(el.dataset.saveid, ta.value);
-  }));
+    html += '<div class="task-card' + (isDone?' done':'') + '">';
+    html += '<div class="card-top">';
+    html += '<div class="chk' + (isDone?' on':'') + '" data-id="' + id + '" data-estado="' + (t.Estado||'pendiente') + '">' + (isDone?'&check;':'') + '</div>';
+    html += '<div class="task-body">';
+    html += '<div class="task-title' + (isDone?' done':'') + '">' + (t.Titulo||'') + '</div>';
+    html += '<div class="task-meta">';
+    html += '<span class="cat-tag cat-' + cat + '">' + (t.Categoria||'') + '</span>';
+    html += '<span class="pri-tag pri-' + pri + '">' + (t.Prioridad||'') + '</span>';
+    if (dl) html += '<span class="deadline-tag ' + dl.cls + '">' + dl.text + '</span>';
+    if (t['Asignado por']) html += '<span class="asignado-tag">· ' + t['Asignado por'] + '</span>';
+    if (hasNotes && !e) html += '<span style="font-size:11px;color:var(--ink-soft)">· tiene avances</span>';
+    html += '</div>';
+    html += '<button class="tog-btn" data-id="' + id + '">' + (e?'cerrar':'avances / notas') + '</button>';
+    html += '</div>';
+    html += '<button class="edit-btn" data-edit="' + id + '" data-titulo="' + tituloEsc + '" data-deadline="' + deadlineEsc + '">&#9998;</button>';
+    html += '<button class="del-btn" data-del="' + id + '">&#215;</button>';
+    html += '</div>';
+    if (e) {
+      html += '<div class="notes-box">';
+      html += '<textarea id="nt-' + id + '" placeholder="Escribe tus avances o notas aqui...">' + (t.Notas||'') + '</textarea>';
+      html += '<div class="notes-actions"><button class="save-btn" data-saveid="' + id + '">Guardar avances</button></div>';
+      html += '</div>';
+    }
+    html += '</div>';
+  });
+
+  tl.innerHTML = html;
+
+  tl.querySelectorAll('.chk').forEach(function(el) {
+    el.addEventListener('click', function(){ toggleDone(el.dataset.id, el.dataset.estado); });
+  });
+  tl.querySelectorAll('.tog-btn').forEach(function(el) {
+    el.addEventListener('click', function(){ expanded[el.dataset.id]=!expanded[el.dataset.id]; renderTasks(); });
+  });
+  tl.querySelectorAll('[data-edit]').forEach(function(el) {
+    el.addEventListener('click', function(){
+      document.getElementById('e-id').value = el.dataset.edit;
+      document.getElementById('e-titulo').value = el.dataset.titulo;
+      document.getElementById('e-deadline').value = el.dataset.deadline;
+      document.getElementById('overlay-edit').classList.add('open');
+    });
+  });
+  tl.querySelectorAll('[data-del]').forEach(function(el) {
+    el.addEventListener('click', function(){ deleteTask(el.dataset.del); });
+  });
+  tl.querySelectorAll('[data-saveid]').forEach(function(el) {
+    el.addEventListener('click', function(){
+      var ta = document.getElementById('nt-'+el.dataset.saveid);
+      if (ta) updateNotes(el.dataset.saveid, ta.value);
+    });
+  });
 }
 
-// Planner modals
-document.getElementById('btn-cancel-tarea').addEventListener('click', () => document.getElementById('overlay-tarea').classList.remove('open'));
-document.getElementById('overlay-tarea').addEventListener('click', function(e) { if(e.target===this) this.classList.remove('open'); });
-document.getElementById('btn-save-tarea').addEventListener('click', () => {
-  const titulo = document.getElementById('f-titulo').value.trim();
-  if (!titulo) { showToast('Escribe el nombre de la tarea'); return; }
-  addTask({ titulo, categoria: document.getElementById('f-cat').value, prioridad: document.getElementById('f-pri').value, deadline: document.getElementById('f-deadline').value, asignadoPor: document.getElementById('f-asignado').value.trim(), notas: document.getElementById('f-notas').value.trim() });
-  document.getElementById('overlay-tarea').classList.remove('open');
-  ['f-titulo','f-asignado','f-notas','f-deadline'].forEach(id => document.getElementById(id).value = '');
-});
-
-document.getElementById('btn-cancel-edit').addEventListener('click', () => document.getElementById('overlay-edit').classList.remove('open'));
-document.getElementById('overlay-edit').addEventListener('click', function(e) { if(e.target===this) this.classList.remove('open'); });
-document.getElementById('btn-save-edit').addEventListener('click', () => {
-  const id = document.getElementById('e-id').value;
-  const titulo = document.getElementById('e-titulo').value.trim();
-  if (!titulo) { showToast('El nombre no puede estar vaco'); return; }
-  document.getElementById('overlay-edit').classList.remove('open');
-  editTask(id, titulo, document.getElementById('e-deadline').value);
-});
-
-document.querySelectorAll('.fb').forEach(b => {
-  b.addEventListener('click', function() {
-    taskFilter = this.dataset.f;
-    document.querySelectorAll('.fb').forEach(x => x.classList.remove('on'));
-    this.classList.add('on');
-    renderTasks();
+function initTareaModal() {
+  document.getElementById('btn-cancel-tarea').addEventListener('click', function(){ closeOverlay('overlay-tarea'); });
+  initOverlay('overlay-tarea');
+  document.getElementById('btn-save-tarea').addEventListener('click', function(){
+    var titulo = document.getElementById('f-titulo').value.trim();
+    if (!titulo) { showToast('Escribe el nombre de la tarea'); return; }
+    addTask({titulo:titulo, categoria:document.getElementById('f-cat').value, prioridad:document.getElementById('f-pri').value, deadline:document.getElementById('f-deadline').value, asignadoPor:document.getElementById('f-asignado').value.trim(), notas:document.getElementById('f-notas').value.trim()});
+    closeOverlay('overlay-tarea');
+    ['f-titulo','f-asignado','f-notas','f-deadline'].forEach(function(id){ document.getElementById(id).value=''; });
   });
-});
+}
 
-async function fetchAbonos() {
-  try {
-    const r = await fetch(WS + '?action=getAbonos');
-    const data = await r.json();
+function initEditModal() {
+  document.getElementById('btn-cancel-edit').addEventListener('click', function(){ closeOverlay('overlay-edit'); });
+  initOverlay('overlay-edit');
+  document.getElementById('btn-save-edit').addEventListener('click', function(){
+    var id = document.getElementById('e-id').value;
+    var titulo = document.getElementById('e-titulo').value.trim();
+    if (!titulo) { showToast('El nombre no puede estar vacio'); return; }
+    closeOverlay('overlay-edit');
+    editTask(id, titulo, document.getElementById('e-deadline').value);
+  });
+}
+
+// TARJETA
+function fetchTarjeta() {
+  fetch(WS + '?action=getTarjeta').then(function(r){ return r.json(); }).then(function(data) {
+    tarjeta = Array.isArray(data) ? data : [];
+    renderTarjeta();
+  }).catch(function(){ tarjeta = []; });
+}
+
+function fetchAbonos() {
+  fetch(WS + '?action=getAbonos').then(function(r){ return r.json(); }).then(function(data) {
     abonos = Array.isArray(data) ? data : [];
-  } catch(e) { abonos = []; }
+    renderTarjeta();
+  }).catch(function(){ abonos = []; });
+}
+
+function addGastoTarjeta(d) {
+  var tempId = Date.now();
+  tarjeta.push({ID:tempId, Fecha:d.fecha, Descripcion:d.descripcion, Valor:d.valor, Ciclo:cicloKey(d.fecha), Reembolso_Nestor:d.reembolso||'No'});
   renderTarjeta();
+  showToast('Gasto guardado');
+  sendToServer({action:'addTarjeta', fecha:d.fecha, descripcion:d.descripcion, valor:d.valor, ciclo:cicloKey(d.fecha), reembolso:d.reembolso||'No'});
+  setTimeout(fetchTarjeta, 5000);
+}
+
+function deleteGastoTarjeta(id) {
+  if (!confirm('Eliminar este gasto?')) return;
+  tarjeta = tarjeta.filter(function(t){ return String(t.ID)!==String(id); });
+  renderTarjeta();
+  sendToServer({action:'deleteTarjeta', id:id});
 }
 
 function addAbono(d) {
-  const tempId = Date.now();
-  abonos.push({ ID: tempId, Fecha: d.fecha, Valor: d.valor });
+  abonos.push({ID:Date.now(), Fecha:d.fecha, Valor:d.valor});
   renderTarjeta();
-  showToast('Abono registrado ');
-  sendToServer({ action: 'addAbono', ...d });
-  setTimeout(fetchAbonos, 4000);
+  showToast('Abono registrado');
+  sendToServer({action:'addAbono', fecha:d.fecha, valor:d.valor});
+  setTimeout(fetchAbonos, 5000);
 }
 
-function deleteAbono(id) {
-  if (!confirm('Eliminar este abono?')) return;
-  abonos = abonos.filter(a => String(a.ID) !== String(id));
-  renderTarjeta();
-  sendToServer({ action: 'deleteAbono', id });
+function renderTarjeta() {
+  var hoy = new Date();
+  var d = hoy.getDate();
+  var inicioAct, finAct, inicioAnt, finAnt;
+  if (d >= 15) {
+    inicioAct = new Date(hoy.getFullYear(), hoy.getMonth(), 15);
+    finAct    = new Date(hoy.getFullYear(), hoy.getMonth()+1, 14);
+  } else {
+    inicioAct = new Date(hoy.getFullYear(), hoy.getMonth()-1, 15);
+    finAct    = new Date(hoy.getFullYear(), hoy.getMonth(), 14);
+  }
+  inicioAnt = new Date(inicioAct.getFullYear(), inicioAct.getMonth()-1, 15);
+  finAnt    = new Date(inicioAct.getFullYear(), inicioAct.getMonth(), 14);
+
+  var ckAct = cicloKey(inicioAct.toISOString().split('T')[0]);
+  var ckAnt = cicloKey(inicioAnt.toISOString().split('T')[0]);
+
+  var mesPagoAct = new Date(finAct.getFullYear(), finAct.getMonth()+1, 1).toLocaleDateString('es-CO',{month:'long'});
+  var mesPagoAnt = new Date(finAnt.getFullYear(), finAnt.getMonth()+1, 1).toLocaleDateString('es-CO',{month:'long'});
+
+  var mesPagoAntFecha = new Date(finAnt.getFullYear(), finAnt.getMonth()+1, 3);
+  var anteriorPendiente = hoy <= mesPagoAntFecha;
+
+  function getKey(t) {
+    var iso = getDateISO(t.Fecha || t.fecha || '');
+    return cicloKey(iso);
+  }
+
+  var gastosAct = tarjeta.filter(function(t){ return getKey(t)===ckAct; });
+  var gastosAnt = tarjeta.filter(function(t){ return getKey(t)===ckAnt; });
+  var totalAct  = gastosAct.reduce(function(s,t){ return s+Number(t.Valor||0); }, 0);
+  var totalAnt  = gastosAnt.reduce(function(s,t){ return s+Number(t.Valor||0); }, 0);
+
+  function abonadoEnRango(desde, hasta) {
+    return abonos.filter(function(a){
+      var f = getDateISO(a.Fecha||a.fecha||'');
+      return f >= desde && f <= hasta;
+    }).reduce(function(s,a){ return s+Number(a.Valor||a.valor||0); }, 0);
+  }
+
+  var inicioActStr = inicioAct.toISOString().split('T')[0];
+  var finActStr    = finAct.toISOString().split('T')[0];
+  var inicioAntStr = inicioAnt.toISOString().split('T')[0];
+  var finAntStr    = finAnt.toISOString().split('T')[0];
+
+  var abonadoAct = abonadoEnRango(inicioActStr, finActStr);
+  var abonadoAnt = abonadoEnRango(inicioAntStr, finAntStr);
+  var pendienteAct = Math.max(0, totalAct - abonadoAct);
+  var pendienteAnt = Math.max(0, totalAnt - abonadoAnt);
+
+  function bannerHTML(label, total, abonado, pendiente, desde, hasta, mesPago, borderColor) {
+    var style = borderColor ? 'style="border-color:' + borderColor + '"' : '';
+    var h = '<div class="ciclo-banner" ' + style + '>';
+    h += '<div class="ciclo-label">' + label + '</div>';
+    h += '<div class="ciclo-valor">' + fmt(total) + '</div>';
+    h += '<div class="ciclo-fechas">' + desde + ' &mdash; ' + hasta + '</div>';
+    if (abonado > 0) {
+      h += '<div style="font-size:12px;color:var(--ink-soft);margin-top:6px">Abonado: ' + fmt(abonado) + ' &nbsp;|&nbsp; <strong style="color:var(--rose-dark)">Pendiente: ' + fmt(pendiente) + '</strong></div>';
+    }
+    h += '<div class="pago-alerta">Pagar antes del 3 de ' + mesPago + '</div>';
+    h += '</div>';
+    return h;
+  }
+
+  function cardsHTML(gastos) {
+    if (!gastos.length) return '<div class="empty">Sin gastos en este ciclo</div>';
+    var sorted = gastos.slice().sort(function(a,b){ return String(b.Fecha).localeCompare(String(a.Fecha)); });
+    return sorted.map(function(t) {
+      var r = String(t.Reembolso_Nestor||'');
+      var reemb = (r && r !== 'No') ? r : '';
+      var h = '<div class="mov-card">';
+      h += '<div class="mov-dot gas"></div>';
+      h += '<div class="mov-body">';
+      h += '<div class="mov-desc">' + (t.Descripcion||'') + '</div>';
+      h += '<div class="mov-meta">' + getDateISO(t.Fecha||'') + '</div>';
+      if (reemb) h += '<div class="mov-reembolso">Reembolso Nestor · ' + reemb + '</div>';
+      h += '</div>';
+      h += '<div class="mov-valor gas">' + fmt(t.Valor) + '</div>';
+      h += '<button class="del-btn" data-deltarjeta="' + t.ID + '">&#215;</button>';
+      h += '</div>';
+      return h;
+    }).join('');
+  }
+
+  var fmtDate = function(d) { return d.toLocaleDateString('es-CO',{day:'numeric',month:'short'}); };
+
+  var bannersHTML = bannerHTML('CICLO ACTUAL', totalAct, abonadoAct, pendienteAct, fmtDate(inicioAct), fmtDate(finAct), mesPagoAct, '');
+  if (anteriorPendiente) {
+    bannersHTML += bannerHTML('CICLO ANTERIOR · PENDIENTE DE PAGO', totalAnt, abonadoAnt, pendienteAnt, fmtDate(inicioAnt), fmtDate(finAnt), mesPagoAnt, '#f0c8cc');
+  }
+
+  document.getElementById('tarjeta-banners').innerHTML = bannersHTML;
+  document.getElementById('tarjeta-list').innerHTML = cardsHTML(gastosAct) + (anteriorPendiente ? cardsHTML(gastosAnt) : '');
+  document.getElementById('tarjeta-list').querySelectorAll('[data-deltarjeta]').forEach(function(el){
+    el.addEventListener('click', function(){ deleteGastoTarjeta(el.dataset.deltarjeta); });
+  });
 }
 
-// Abono modal
-document.getElementById('btn-abono').addEventListener('click', () => {
-  document.getElementById('a-fecha').value = new Date().toISOString().split('T')[0];
-  document.getElementById('overlay-abono').classList.add('open');
-});
-document.getElementById('btn-cancel-abono').addEventListener('click', () => document.getElementById('overlay-abono').classList.remove('open'));
-document.getElementById('overlay-abono').addEventListener('click', function(e) { if(e.target===this) this.classList.remove('open'); });
-document.getElementById('btn-save-abono').addEventListener('click', () => {
-  const valor = document.getElementById('a-valor').value;
-  const fecha = document.getElementById('a-fecha').value;
-  if (!valor || !fecha) { showToast('Completa todos los campos'); return; }
-  addAbono({ valor: Number(valor), fecha });
-  document.getElementById('overlay-abono').classList.remove('open');
-  document.getElementById('a-valor').value = '';
-});
-
-async function fetchTarjeta() {
-  try {
-    const r = await fetch(WS + '?action=getTarjeta');
-    const data = await r.json();
-    tarjeta = Array.isArray(data) ? data : [];
-  } catch(e) { tarjeta = []; }
-  renderTarjeta();
+function initTarjetaModal() {
+  document.getElementById('btn-cancel-tarjeta').addEventListener('click', function(){ closeOverlay('overlay-tarjeta'); });
+  initOverlay('overlay-tarjeta');
+  document.getElementById('btn-save-tarjeta').addEventListener('click', function(){
+    var desc = document.getElementById('t-desc').value.trim();
+    var valor = document.getElementById('t-valor').value;
+    var fecha = document.getElementById('t-fecha').value;
+    if (!desc || !valor || !fecha) { showToast('Completa todos los campos'); return; }
+    addGastoTarjeta({descripcion:desc, valor:Number(valor), fecha:fecha, reembolso:document.getElementById('t-reembolso').value});
+    closeOverlay('overlay-tarjeta');
+    document.getElementById('t-desc').value='';
+    document.getElementById('t-valor').value='';
+  });
 }
 
-async function fetchCuentas() {
-  try {
-    const r = await fetch(WS + '?action=getCuentas');
-    const data = await r.json();
+function initAbonoModal() {
+  document.getElementById('btn-abono').addEventListener('click', function(){
+    document.getElementById('a-fecha').value = new Date().toISOString().split('T')[0];
+    document.getElementById('overlay-abono').classList.add('open');
+  });
+  document.getElementById('btn-cancel-abono').addEventListener('click', function(){ closeOverlay('overlay-abono'); });
+  initOverlay('overlay-abono');
+  document.getElementById('btn-save-abono').addEventListener('click', function(){
+    var valor = document.getElementById('a-valor').value;
+    var fecha = document.getElementById('a-fecha').value;
+    if (!valor || !fecha) { showToast('Completa todos los campos'); return; }
+    addAbono({valor:Number(valor), fecha:fecha});
+    closeOverlay('overlay-abono');
+    document.getElementById('a-valor').value='';
+  });
+}
+
+// CUENTAS
+function fetchCuentas() {
+  fetch(WS + '?action=getCuentas').then(function(r){ return r.json(); }).then(function(data) {
     cuentas = Array.isArray(data) ? data : [];
-  } catch(e) { cuentas = []; }
+    renderCuentas();
+  }).catch(function(){ cuentas = []; });
+}
+
+function addMovCuenta(d) {
+  cuentas.push({ID:Date.now(), Fecha:d.fecha, Descripcion:d.descripcion, Valor:d.valor, Tipo:d.tipo, Cuenta:d.cuenta, Reembolso_Nestor:d.reembolso||'No'});
   renderCuentas();
+  showToast('Movimiento guardado');
+  sendToServer({action:'addCuenta', fecha:d.fecha, descripcion:d.descripcion, valor:d.valor, tipo:d.tipo, cuenta:d.cuenta, reembolso:d.reembolso||'No'});
+  setTimeout(fetchCuentas, 5000);
 }
 
-function addTarjeta(d) {
-  const tempId = Date.now();
-  tarjeta.push({ ID: tempId, Fecha: d.fecha, Descripcion: d.descripcion, Valor: d.valor, Ciclo: cicloKey(d.fecha), Reembolso_Nestor: d.reembolso || 'No' });
-  renderTarjeta();
-  showToast('Gasto guardado ');
-  sendToServer({ action: 'addTarjeta', ...d, ciclo: cicloKey(d.fecha) });
-  setTimeout(fetchTarjeta, 4000);
-}
-
-function deleteTarjeta(id) {
-  if (!confirm('Eliminar este gasto?')) return;
-  tarjeta = tarjeta.filter(t => String(t.ID) !== String(id));
-  renderTarjeta();
-  sendToServer({ action: 'deleteTarjeta', id });
-}
-
-function addCuenta(d) {
-  const tempId = Date.now();
-  cuentas.push({ ID: tempId, Fecha: d.fecha, Descripcion: d.descripcion, Valor: d.valor, Tipo: d.tipo, Cuenta: d.cuenta, Reembolso_Nestor: d.reembolso });
-  renderCuentas();
-  showToast('Movimiento guardado ');
-  sendToServer({ action: 'addCuenta', ...d });
-  setTimeout(fetchCuentas, 4000);
-}
-
-function deleteCuenta(id) {
+function deleteMovCuenta(id) {
   if (!confirm('Eliminar este movimiento?')) return;
-  cuentas = cuentas.filter(c => String(c.ID) !== String(id));
+  cuentas = cuentas.filter(function(c){ return String(c.ID)!==String(id); });
   renderCuentas();
-  sendToServer({ action: 'deleteCuenta', id });
+  sendToServer({action:'deleteCuenta', id:id});
+}
+
+function renderCuentas() {
+  var filtradas = cuentas.filter(function(c){ return (c.Cuenta||c.cuenta||'')===cuentaTab; });
+  var ingresos = filtradas.filter(function(c){ return (c.Tipo||c.tipo||'')==='Ingreso'; }).reduce(function(s,c){ return s+Number(c.Valor||0); }, 0);
+  var gastos   = filtradas.filter(function(c){ return (c.Tipo||c.tipo||'')==='Gasto'; }).reduce(function(s,c){ return s+Number(c.Valor||0); }, 0);
+  var saldo    = ingresos - gastos;
+
+  document.getElementById('resumen-row').innerHTML =
+    '<div class="resumen-card"><div class="resumen-n ing">' + fmt(ingresos) + '</div><div class="resumen-l">ingresos</div></div>' +
+    '<div class="resumen-card"><div class="resumen-n gas">' + fmt(gastos) + '</div><div class="resumen-l">gastos</div></div>' +
+    '<div class="resumen-card"><div class="resumen-n" style="color:' + (saldo>=0?'var(--ingreso)':'var(--gasto)') + '">' + fmt(saldo) + '</div><div class="resumen-l">saldo</div></div>';
+
+  var sorted = filtradas.slice().sort(function(a,b){ return String(b.Fecha).localeCompare(String(a.Fecha)); });
+  var cl = document.getElementById('cuentas-list');
+  if (!sorted.length) { cl.innerHTML = '<div class="empty">Sin movimientos</div>'; return; }
+
+  cl.innerHTML = sorted.map(function(c) {
+    var isIng = (c.Tipo||c.tipo||'')==='Ingreso';
+    var r = String(c.Reembolso_Nestor||'');
+    var reemb = (r && r !== 'No') ? r : '';
+    var h = '<div class="mov-card">';
+    h += '<div class="mov-dot ' + (isIng?'ing':'gas') + '"></div>';
+    h += '<div class="mov-body">';
+    h += '<div class="mov-desc">' + (c.Descripcion||'') + '</div>';
+    h += '<div class="mov-meta">' + getDateISO(c.Fecha||'') + '</div>';
+    if (reemb) h += '<div class="mov-reembolso">Reembolso Nestor · ' + reemb + '</div>';
+    h += '</div>';
+    h += '<div class="mov-valor ' + (isIng?'ing':'gas') + '">' + (isIng?'+':'−') + fmt(c.Valor) + '</div>';
+    h += '<button class="del-btn" data-delcuenta="' + c.ID + '">&#215;</button>';
+    h += '</div>';
+    return h;
+  }).join('');
+
+  cl.querySelectorAll('[data-delcuenta]').forEach(function(el){
+    el.addEventListener('click', function(){ deleteMovCuenta(el.dataset.delcuenta); });
+  });
+}
+
+function initCuentaModal() {
+  document.getElementById('btn-cancel-cuenta').addEventListener('click', function(){ closeOverlay('overlay-cuenta'); });
+  initOverlay('overlay-cuenta');
+  document.getElementById('btn-save-cuenta').addEventListener('click', function(){
+    var desc = document.getElementById('c-desc').value.trim();
+    var valor = document.getElementById('c-valor').value;
+    var fecha = document.getElementById('c-fecha').value;
+    if (!desc || !valor || !fecha) { showToast('Completa todos los campos'); return; }
+    addMovCuenta({descripcion:desc, valor:Number(valor), fecha:fecha, tipo:document.getElementById('c-tipo').value, cuenta:document.getElementById('c-cuenta').value, reembolso:document.getElementById('c-reembolso').value});
+    closeOverlay('overlay-cuenta');
+    document.getElementById('c-desc').value='';
+    document.getElementById('c-valor').value='';
+  });
+}
+
+// NESTOR
+function renderNestor() {
+  var tarjetaPend = tarjeta.filter(function(t){
+    var r = String(t.Reembolso_Nestor||'').toLowerCase();
+    return r === 'si' || r === 'si, pendiente';
+  });
+  var cuentasPend = cuentas.filter(function(c){
+    var r = String(c.Reembolso_Nestor||'').toLowerCase();
+    return r === 'si' || r === 'si, pendiente';
+  });
+
+  var totalTarjeta = tarjetaPend.reduce(function(s,t){ return s+Number(t.Valor||0); }, 0);
+  var totalCuentas = cuentasPend.reduce(function(s,c){ return s+Number(c.Valor||0); }, 0);
+  var totalGeneral = totalTarjeta + totalCuentas;
+
+  var html = '<div class="nestor-total">';
+  html += '<div class="ciclo-label">TOTAL QUE TE DEBE NESTOR</div>';
+  html += '<div class="nestor-n">' + fmt(totalGeneral) + '</div>';
+  if (totalTarjeta > 0 || totalCuentas > 0) {
+    html += '<div class="nestor-sub">Tarjeta: ' + fmt(totalTarjeta) + ' &nbsp;|&nbsp; Cuentas: ' + fmt(totalCuentas) + '</div>';
+  }
+  if (totalGeneral > 0) {
+    html += '<button class="btn-nestor" id="btn-abono-nestor">Abono Nestor</button>';
+  }
+  html += '</div>';
+
+  if (totalGeneral === 0) {
+    html += '<div class="empty">Nestor no te debe nada ahorita</div>';
+  } else {
+    if (tarjetaPend.length) {
+      html += '<div class="section-label">TARJETA</div>';
+      tarjetaPend.forEach(function(t){
+        html += '<div class="mov-card"><div class="mov-dot gas"></div><div class="mov-body"><div class="mov-desc">' + (t.Descripcion||'') + '</div><div class="mov-meta">Visa · ' + getDateISO(t.Fecha||'') + '</div></div><div class="mov-valor gas">' + fmt(t.Valor||0) + '</div></div>';
+      });
+    }
+    if (cuentasPend.length) {
+      html += '<div class="section-label" style="margin-top:12px">CUENTAS</div>';
+      cuentasPend.forEach(function(c){
+        html += '<div class="mov-card"><div class="mov-dot gas"></div><div class="mov-body"><div class="mov-desc">' + (c.Descripcion||'') + '</div><div class="mov-meta">' + (c.Cuenta||'') + ' · ' + getDateISO(c.Fecha||'') + '</div></div><div class="mov-valor gas">' + fmt(c.Valor||0) + '</div></div>';
+      });
+    }
+  }
+
+  document.getElementById('nestor-content').innerHTML = html;
+
+  var btnAbono = document.getElementById('btn-abono-nestor');
+  if (btnAbono) {
+    btnAbono.addEventListener('click', function(){
+      if (!confirm('Nestor te pago ' + fmt(totalGeneral) + '. Marcar todo como recibido?')) return;
+      tarjeta.forEach(function(t){
+        var r = String(t.Reembolso_Nestor||'').toLowerCase();
+        if (r === 'si' || r === 'si, pendiente') {
+          t.Reembolso_Nestor = 'Recibido';
+          sendToServer({action:'updateReembolsoTarjeta', id:t.ID, value:'Recibido'});
+        }
+      });
+      cuentas.forEach(function(c){
+        var r = String(c.Reembolso_Nestor||'').toLowerCase();
+        if (r === 'si' || r === 'si, pendiente') {
+          c.Reembolso_Nestor = 'Recibido';
+          sendToServer({action:'updateReembolsoCuenta', id:c.ID, value:'Recibido'});
+        }
+      });
+      showToast('Abono registrado');
+      renderNestor();
+    });
+  }
 }
 
 function renderGastos() {
@@ -723,242 +980,6 @@ function renderGastos() {
   else if (gastosTab === 'cuentas') renderCuentas();
   else if (gastosTab === 'nestor') renderNestor();
 }
-
-function renderTarjeta() {
-  const hoy = new Date();
-
-  // Ciclo actual
-  const { inicio: inicioAct, fin: finAct } = cicloActual();
-  const ckAct = cicloKey(inicioAct.toISOString().split('T')[0]);
-
-  // Ciclo anterior (15 del mes pasado al 14 de este mes)
-  const inicioAnt = new Date(inicioAct.getFullYear(), inicioAct.getMonth() - 1, 15);
-  const finAnt    = new Date(inicioAct.getFullYear(), inicioAct.getMonth(), 14);
-  const ckAnt     = cicloKey(inicioAnt.toISOString().split('T')[0]);
-
-  // El ciclo anterior se paga el 3 del mes siguiente a su fin
-  const mesPagoAntD = new Date(finAnt.getFullYear(), finAnt.getMonth() + 1, 3);
-  const anteriorPendiente = hoy <= mesPagoAntD;
-
-  function getKey(t) {
-    const fecha = String(t.Fecha || t.fecha || '').trim();
-    if (!fecha) return '';
-    // Sheets may return date as a JS Date object serialized
-    // Format: YYYY-MM-DD or DD/MM/YYYY or similar
-    let iso = '';
-    if (fecha.match(/^\d{4}-\d{2}-\d{2}/)) {
-      iso = fecha.substring(0, 10);
-    } else if (fecha.includes('/')) {
-      const p = fecha.split('/');
-      if (p.length === 3 && p[2].length === 4) iso = p[2]+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0');
-      else if (p.length === 3) iso = p[0]+'-'+p[1].padStart(2,'0')+'-'+p[2].padStart(2,'0');
-    }
-    if (!iso) return '';
-    const parts = iso.split('-');
-    const day = parseInt(parts[2]);
-    const month = parseInt(parts[1]) - 1;
-    const year = parseInt(parts[0]);
-    if (day >= 15) return year + '-' + String(month + 1).padStart(2, '0');
-    if (month === 0) return (year - 1) + '-12';
-    return year + '-' + String(month).padStart(2, '0');
-  }
-
-  const gastosAct = tarjeta.filter(t => getKey(t) === ckAct);
-  const gastosAnt = anteriorPendiente ? tarjeta.filter(t => getKey(t) === ckAnt) : [];
-
-  const totalAct = gastosAct.reduce((s, t) => s + Number(t.Valor||0), 0);
-  const totalAnt = gastosAnt.reduce((s, t) => s + Number(t.Valor||0), 0);
-
-  const mesPagoAct = new Date(finAct.getFullYear(), finAct.getMonth() + 1, 1).toLocaleDateString('es-CO', {month:'long'});
-  const mesPagoAnt = new Date(finAnt.getFullYear(), finAnt.getMonth() + 1, 1).toLocaleDateString('es-CO', {month:'long'});
-
-  function tarjetaCards(lista) {
-    if (!lista.length) return '<div class="empty">Sin gastos en este ciclo</div>';
-    return [...lista].sort((a,b) => String(b.Fecha).localeCompare(String(a.Fecha))).map(t => {
-      const reembolso = t.Reembolso_Nestor && t.Reembolso_Nestor !== 'No' ? t.Reembolso_Nestor : '';
-      return `<div class="mov-card">
-        <div class="mov-dot gas"></div>
-        <div class="mov-body">
-          <div class="mov-desc">${t.Descripcion||''}</div>
-          <div class="mov-meta">${String(t.Fecha).split('T')[0]||t.Fecha}</div>
-          ${reembolso?`<div class="mov-reembolso">Reembolso Nstor  ${reembolso}</div>`:''}
-        </div>
-        <div class="mov-valor gas">${fmt(t.Valor)}</div>
-        <button class="del-btn" data-deltarjeta="${t.ID}" title="Eliminar"></button>
-      </div>`;
-    }).join('');
-  }
-
-  // Abonos del ciclo actual y anterior
-  function abonosDeCiclo(ckInicio, ckFin) {
-    return abonos.filter(a => {
-      const f = String(a.Fecha||a.fecha||'').trim().substring(0,10);
-      if (!f) return false;
-      return f >= ckInicio && f <= ckFin;
-    }).reduce((s,a) => s + Number(a.Valor||a.valor||0), 0);
-  }
-
-  const inicioActStr = inicioAct.toISOString().split('T')[0];
-  const finActStr    = finAct.toISOString().split('T')[0];
-  const inicioAntStr = inicioAnt.toISOString().split('T')[0];
-  const finAntStr    = finAnt.toISOString().split('T')[0];
-
-  const abonadoAct = abonosDeCiclo(inicioActStr, finActStr);
-  const abonadoAnt = abonosDeCiclo(inicioAntStr, finAntStr);
-  const pendienteAct = Math.max(0, totalAct - abonadoAct);
-  const pendienteAnt = Math.max(0, totalAnt - abonadoAnt);
-
-  let html = `
-    <div class="ciclo-banner">
-      <div class="ciclo-row">
-        <div><div class="ciclo-label">CICLO ACTUAL</div><div class="ciclo-valor">${fmt(totalAct)}</div></div>
-      </div>
-      <div class="ciclo-fechas">${inicioAct.toLocaleDateString('es-CO',{day:'numeric',month:'short'})}  ${finAct.toLocaleDateString('es-CO',{day:'numeric',month:'short'})}</div>
-      ${abonadoAct > 0 ? `<div style="font-size:12px;color:var(--ink-soft);margin-top:6px">Abonado: ${fmt(abonadoAct)}  <strong style="color:var(--rose-dark)">Pendiente: ${fmt(pendienteAct)}</strong></div>` : ''}
-      <div class="pago-alerta">Pagar antes del 3 de ${mesPagoAct}</div>
-    </div>
-    ${tarjetaCards(gastosAct)}`;
-
-  if (anteriorPendiente && gastosAnt.length) {
-    html += `
-    <div class="ciclo-banner" style="margin-top:1rem;border-color:#f0c8cc">
-      <div class="ciclo-row">
-        <div><div class="ciclo-label">CICLO ANTERIOR  PENDIENTE DE PAGO</div><div class="ciclo-valor" style="font-size:20px">${fmt(totalAnt)}</div></div>
-      </div>
-      <div class="ciclo-fechas">${inicioAnt.toLocaleDateString('es-CO',{day:'numeric',month:'short'})}  ${finAnt.toLocaleDateString('es-CO',{day:'numeric',month:'short'})}</div>
-      ${abonadoAnt > 0 ? `<div style="font-size:12px;color:var(--ink-soft);margin-top:6px">Abonado: ${fmt(abonadoAnt)}  <strong style="color:var(--rose-dark)">Pendiente: ${fmt(pendienteAnt)}</strong></div>` : ''}
-      <div class="pago-alerta">Pagar antes del 3 de ${mesPagoAnt}</div>
-    </div>
-    ${tarjetaCards(gastosAnt)}`;
-  }
-
-  document.getElementById('ciclo-banner-wrap').innerHTML = '';
-  document.getElementById('tarjeta-list').innerHTML = html;
-  document.getElementById('tarjeta-list').querySelectorAll('[data-deltarjeta]').forEach(el => el.addEventListener('click', () => deleteTarjeta(el.dataset.deltarjeta)));
-}
-
-function renderNestor() {
-  // Gastos tarjeta pendientes de reembolso
-  const tarjetaPendiente = tarjeta.filter(t => {
-    const r = String(t.Reembolso_Nestor||'').toLowerCase();
-    return r === 'si' || r === 'si, pendiente';
-  });
-  const totalTarjeta = tarjetaPendiente.reduce((s,t) => s + Number(t.Valor||0), 0);
-
-  // Movimientos de cuentas pendientes de reembolso
-  const cuentasPendiente = cuentas.filter(c => {
-    const r = String(c.Reembolso_Nestor||'').toLowerCase();
-    return r === 'si' || r === 'si, pendiente';
-  });
-  const totalCuentas = cuentasPendiente.reduce((s,c) => s + Number(c.Valor||0), 0);
-
-  const totalGeneral = totalTarjeta + totalCuentas;
-
-  const itemsHTML = (items, tipo) => items.map(t => `
-    <div class="mov-card">
-      <div class="mov-dot gas"></div>
-      <div class="mov-body">
-        <div class="mov-desc">${t.Descripcion||t.descripcion||''}</div>
-        <div class="mov-meta">${tipo}  ${String(t.Fecha||'').split('T')[0]}</div>
-      </div>
-      <div class="mov-valor gas">${fmt(t.Valor||0)}</div>
-    </div>`).join('');
-
-  const html = `
-    <div class="ciclo-banner" style="margin-bottom:1.25rem">
-      <div class="ciclo-label">TOTAL QUE TE DEBE NSTOR</div>
-      <div class="ciclo-valor" style="font-size:28px;margin:4px 0">${fmt(totalGeneral)}</div>
-      ${totalTarjeta > 0 ? `<div style="font-size:12px;color:var(--ink-soft);margin-top:2px">Tarjeta: ${fmt(totalTarjeta)}  Cuentas: ${fmt(totalCuentas)}</div>` : `<div style="font-size:12px;color:var(--ink-soft);margin-top:2px">Cuentas: ${fmt(totalCuentas)}</div>`}
-      ${totalGeneral > 0 ? `<button id="btn-abono-nestor" style="margin-top:12px;width:100%;padding:10px;background:var(--rose-deep);color:white;border:none;border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;cursor:pointer">Abono Nstor</button>` : ''}
-    </div>
-    ${totalGeneral === 0 ? '<div class="empty">Nstor no te debe nada ahorita</div>' : ''}
-    ${tarjetaPendiente.length ? `<div style="font-size:11px;color:var(--ink-soft);letter-spacing:.03em;margin-bottom:8px">TARJETA</div>${itemsHTML(tarjetaPendiente,'Visa')}` : ''}
-    ${cuentasPendiente.length ? `<div style="font-size:11px;color:var(--ink-soft);letter-spacing:.03em;margin:12px 0 8px">CUENTAS</div>${itemsHTML(cuentasPendiente,'Cuenta')}` : ''}
-  `;
-
-  document.getElementById('nestor-content').innerHTML = html;
-
-  const btnAbono = document.getElementById('btn-abono-nestor');
-  if (btnAbono) {
-    btnAbono.addEventListener('click', () => {
-      if (!confirm(`Nstor te pag ${fmt(totalGeneral)}. Marcar todo como recibido?`)) return;
-      // Marcar todos como recibido en memoria
-      tarjeta.forEach(t => {
-        const r = String(t.Reembolso_Nestor||'').toLowerCase();
-        if (r === 'si' || r === 'si, pendiente') {
-          t.Reembolso_Nestor = 'Recibido';
-          sendToServer({ action: 'updateReembolsoTarjeta', id: t.ID, value: 'Recibido' });
-        }
-      });
-      cuentas.forEach(c => {
-        const r = String(c.Reembolso_Nestor||'').toLowerCase();
-        if (r === 'si' || r === 'si, pendiente') {
-          c.Reembolso_Nestor = 'Recibido';
-          sendToServer({ action: 'updateReembolsoCuenta', id: c.ID, value: 'Recibido' });
-        }
-      });
-      showToast('Abono registrado ');
-      renderNestor();
-    });
-  }
-}
-  const filtradas = cuentas.filter(c => (c.Cuenta||'') === cuentaTab);
-  const ingresos = filtradas.filter(c => (c.Tipo||'') === 'Ingreso').reduce((s,c) => s+Number(c.Valor||0), 0);
-  const gastos   = filtradas.filter(c => (c.Tipo||'') === 'Gasto').reduce((s,c) => s+Number(c.Valor||0), 0);
-  const saldo    = ingresos - gastos;
-
-  document.getElementById('resumen-row').innerHTML = `
-    <div class="resumen-card"><div class="resumen-n ing">${fmt(ingresos)}</div><div class="resumen-l">ingresos</div></div>
-    <div class="resumen-card"><div class="resumen-n gas">${fmt(gastos)}</div><div class="resumen-l">gastos</div></div>
-    <div class="resumen-card"><div class="resumen-n sal" style="color:${saldo>=0?'var(--ingreso)':'var(--gasto)'}">${fmt(saldo)}</div><div class="resumen-l">saldo</div></div>`;
-
-  const cl = document.getElementById('cuentas-list');
-  const sorted = [...filtradas].sort((a,b) => String(b.Fecha).localeCompare(String(a.Fecha)));
-  if (!sorted.length) { cl.innerHTML = '<div class="empty">Sin movimientos</div>'; return; }
-  cl.innerHTML = sorted.map(c => {
-    const isIng = (c.Tipo||'') === 'Ingreso';
-    const reembolso = c.Reembolso_Nestor && c.Reembolso_Nestor !== 'No' ? c.Reembolso_Nestor : '';
-    return `<div class="mov-card">
-      <div class="mov-dot ${isIng?'ing':'gas'}"></div>
-      <div class="mov-body">
-        <div class="mov-desc">${c.Descripcion||''}</div>
-        <div class="mov-meta">${String(c.Fecha).split('T')[0]||c.Fecha}</div>
-        ${reembolso?`<div class="mov-reembolso">Reembolso Nstor  ${reembolso}</div>`:''}
-      </div>
-      <div class="mov-valor ${isIng?'ing':'gas'}">${isIng?'+':''}${fmt(c.Valor)}</div>
-      <button class="del-btn" data-delcuenta="${c.ID}" title="Eliminar"></button>
-    </div>`;
-  }).join('');
-  cl.querySelectorAll('[data-delcuenta]').forEach(el => el.addEventListener('click', () => deleteCuenta(el.dataset.delcuenta)));
-}
-
-// Gastos modals
-document.getElementById('btn-cancel-tarjeta').addEventListener('click', () => document.getElementById('overlay-tarjeta').classList.remove('open'));
-document.getElementById('overlay-tarjeta').addEventListener('click', function(e) { if(e.target===this) this.classList.remove('open'); });
-document.getElementById('btn-save-tarjeta').addEventListener('click', () => {
-  const desc = document.getElementById('t-desc').value.trim();
-  const valor = document.getElementById('t-valor').value;
-  const fecha = document.getElementById('t-fecha').value;
-  if (!desc || !valor || !fecha) { showToast('Completa todos los campos'); return; }
-  addTarjeta({ descripcion: desc, valor: Number(valor), fecha, reembolso: document.getElementById('t-reembolso').value });
-  document.getElementById('overlay-tarjeta').classList.remove('open');
-  ['t-desc','t-valor'].forEach(id => document.getElementById(id).value = '');
-});
-
-document.getElementById('btn-cancel-cuenta').addEventListener('click', () => document.getElementById('overlay-cuenta').classList.remove('open'));
-document.getElementById('overlay-cuenta').addEventListener('click', function(e) { if(e.target===this) this.classList.remove('open'); });
-document.getElementById('btn-save-cuenta').addEventListener('click', () => {
-  const desc = document.getElementById('c-desc').value.trim();
-  const valor = document.getElementById('c-valor').value;
-  const fecha = document.getElementById('c-fecha').value;
-  if (!desc || !valor || !fecha) { showToast('Completa todos los campos'); return; }
-  addCuenta({ descripcion: desc, valor: Number(valor), fecha, tipo: document.getElementById('c-tipo').value, cuenta: document.getElementById('c-cuenta').value, reembolso: document.getElementById('c-reembolso').value });
-  document.getElementById('overlay-cuenta').classList.remove('open');
-  ['c-desc','c-valor'].forEach(id => document.getElementById(id).value = '');
-});
-
-// Init
-fetchTasks();
 </script>
 </body>
 </html>
