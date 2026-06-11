@@ -204,6 +204,7 @@
     <div class="gastos-tabs">
       <button class="gtab on" data-g="tarjeta">Visa Platinum</button>
       <button class="gtab" data-g="cuentas">Confiar & Bancolombia</button>
+      <button class="gtab" data-g="nestor">Néstor</button>
     </div>
 
     <!-- Tarjeta -->
@@ -221,6 +222,11 @@
       </div>
       <div class="resumen-row" id="resumen-row"></div>
       <div id="cuentas-list"></div>
+    </div>
+
+    <!-- Néstor -->
+    <div id="g-nestor" style="display:none">
+      <div id="nestor-content"></div>
     </div>
   </div>
 
@@ -361,7 +367,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const WS = 'https://script.google.com/macros/s/AKfycbzMyxP-wKLXqCoWoxdGMwKu7fO6anvG5vSD8H6JpCidhuIwv6gE9O7um1-SREib7Q6KNQ/exec';
+const WS = 'https://script.google.com/macros/s/AKfycbyng3lyMb0qA-XVoSkNkbtWCNjuUaQUcAGQ9HN2jwRy8aR8-rGMqQGMq4Puk9x48VOy/exec';
 
 let tasks = [], tarjeta = [], cuentas = [], abonos = [];
 let taskFilter = 'todas', expanded = {};
@@ -434,6 +440,8 @@ document.querySelectorAll('.gtab').forEach(b => {
     this.classList.add('on');
     document.getElementById('g-tarjeta').style.display = gastosTab === 'tarjeta' ? 'block' : 'none';
     document.getElementById('g-cuentas').style.display = gastosTab === 'cuentas' ? 'block' : 'none';
+    document.getElementById('g-nestor').style.display  = gastosTab === 'nestor'  ? 'block' : 'none';
+    document.getElementById('fab').style.display = gastosTab === 'nestor' ? 'none' : 'flex';
     renderGastos();
   });
 });
@@ -716,7 +724,8 @@ function deleteCuenta(id) {
 
 function renderGastos() {
   if (gastosTab === 'tarjeta') renderTarjeta();
-  else renderCuentas();
+  else if (gastosTab === 'cuentas') renderCuentas();
+  else if (gastosTab === 'nestor') renderNestor();
 }
 
 function renderTarjeta() {
@@ -832,7 +841,71 @@ function renderTarjeta() {
   document.getElementById('tarjeta-list').querySelectorAll('[data-deltarjeta]').forEach(el => el.addEventListener('click', () => deleteTarjeta(el.dataset.deltarjeta)));
 }
 
-function renderCuentas() {
+function renderNestor() {
+  // Gastos tarjeta pendientes de reembolso
+  const tarjetaPendiente = tarjeta.filter(t => {
+    const r = String(t.Reembolso_Nestor||'').toLowerCase();
+    return r === 'si' || r === 'si, pendiente';
+  });
+  const totalTarjeta = tarjetaPendiente.reduce((s,t) => s + Number(t.Valor||0), 0);
+
+  // Movimientos de cuentas pendientes de reembolso
+  const cuentasPendiente = cuentas.filter(c => {
+    const r = String(c.Reembolso_Nestor||'').toLowerCase();
+    return r === 'si' || r === 'si, pendiente';
+  });
+  const totalCuentas = cuentasPendiente.reduce((s,c) => s + Number(c.Valor||0), 0);
+
+  const totalGeneral = totalTarjeta + totalCuentas;
+
+  const itemsHTML = (items, tipo) => items.map(t => `
+    <div class="mov-card">
+      <div class="mov-dot gas"></div>
+      <div class="mov-body">
+        <div class="mov-desc">${t.Descripcion||t.descripcion||''}</div>
+        <div class="mov-meta">${tipo} · ${String(t.Fecha||'').split('T')[0]}</div>
+      </div>
+      <div class="mov-valor gas">${fmt(t.Valor||0)}</div>
+    </div>`).join('');
+
+  const html = `
+    <div class="ciclo-banner" style="margin-bottom:1.25rem">
+      <div class="ciclo-label">TOTAL QUE TE DEBE NÉSTOR</div>
+      <div class="ciclo-valor" style="font-size:28px;margin:4px 0">${fmt(totalGeneral)}</div>
+      ${totalTarjeta > 0 ? `<div style="font-size:12px;color:var(--ink-soft);margin-top:2px">Tarjeta: ${fmt(totalTarjeta)} · Cuentas: ${fmt(totalCuentas)}</div>` : `<div style="font-size:12px;color:var(--ink-soft);margin-top:2px">Cuentas: ${fmt(totalCuentas)}</div>`}
+      ${totalGeneral > 0 ? `<button id="btn-abono-nestor" style="margin-top:12px;width:100%;padding:10px;background:var(--rose-deep);color:white;border:none;border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;cursor:pointer">Abono Néstor</button>` : ''}
+    </div>
+    ${totalGeneral === 0 ? '<div class="empty">Néstor no te debe nada ahorita</div>' : ''}
+    ${tarjetaPendiente.length ? `<div style="font-size:11px;color:var(--ink-soft);letter-spacing:.03em;margin-bottom:8px">TARJETA</div>${itemsHTML(tarjetaPendiente,'Visa')}` : ''}
+    ${cuentasPendiente.length ? `<div style="font-size:11px;color:var(--ink-soft);letter-spacing:.03em;margin:12px 0 8px">CUENTAS</div>${itemsHTML(cuentasPendiente,'Cuenta')}` : ''}
+  `;
+
+  document.getElementById('nestor-content').innerHTML = html;
+
+  const btnAbono = document.getElementById('btn-abono-nestor');
+  if (btnAbono) {
+    btnAbono.addEventListener('click', () => {
+      if (!confirm(`Néstor te pagó ${fmt(totalGeneral)}. ¿Marcar todo como recibido?`)) return;
+      // Marcar todos como recibido en memoria
+      tarjeta.forEach(t => {
+        const r = String(t.Reembolso_Nestor||'').toLowerCase();
+        if (r === 'si' || r === 'si, pendiente') {
+          t.Reembolso_Nestor = 'Recibido';
+          sendToServer({ action: 'updateReembolsoTarjeta', id: t.ID, value: 'Recibido' });
+        }
+      });
+      cuentas.forEach(c => {
+        const r = String(c.Reembolso_Nestor||'').toLowerCase();
+        if (r === 'si' || r === 'si, pendiente') {
+          c.Reembolso_Nestor = 'Recibido';
+          sendToServer({ action: 'updateReembolsoCuenta', id: c.ID, value: 'Recibido' });
+        }
+      });
+      showToast('Abono registrado ✓');
+      renderNestor();
+    });
+  }
+}
   const filtradas = cuentas.filter(c => (c.Cuenta||'') === cuentaTab);
   const ingresos = filtradas.filter(c => (c.Tipo||'') === 'Ingreso').reduce((s,c) => s+Number(c.Valor||0), 0);
   const gastos   = filtradas.filter(c => (c.Tipo||'') === 'Gasto').reduce((s,c) => s+Number(c.Valor||0), 0);
