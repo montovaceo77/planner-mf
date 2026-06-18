@@ -33,6 +33,8 @@
   --ingreso-bg: #EAF2EC;
   --gasto-bg: #F9EBED;
   --gasto: #9A5C65;
+  --warn: #C4A87A;
+  --warn-bg: #F7F0E6;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; font-size: 14px; line-height: 1.6; padding-bottom: 70px; }
@@ -96,8 +98,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
 .save-btn { font-size: 12px; padding: 5px 16px; border: 1px solid var(--rose); border-radius: 20px; background: transparent; color: var(--rose-dark); cursor: pointer; font-family: 'DM Sans', sans-serif; }
 .save-btn:hover { background: var(--rose-light); }
 
-.gastos-tabs { display: flex; gap: 8px; margin-bottom: 1.25rem; }
-.gtab { flex: 1; padding: 8px; font-size: 12px; font-family: 'DM Sans', sans-serif; border: 1px solid var(--border); border-radius: 10px; background: var(--white); color: var(--ink-mid); cursor: pointer; text-align: center; }
+.gastos-tabs { display: flex; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.gtab { flex: 1; min-width: 0; padding: 8px 6px; font-size: 11px; font-family: 'DM Sans', sans-serif; border: 1px solid var(--border); border-radius: 10px; background: var(--white); color: var(--ink-mid); cursor: pointer; text-align: center; white-space: nowrap; }
 .gtab.on { background: var(--rose-light); border-color: var(--rose); color: var(--rose-dark); font-weight: 500; }
 
 .ciclo-banner { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
@@ -122,6 +124,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
 .mov-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .mov-dot.ing { background: var(--ingreso); }
 .mov-dot.gas { background: var(--gasto); }
+.mov-dot.warn { background: var(--warn); }
 .mov-body { flex: 1; min-width: 0; }
 .mov-desc { font-size: 14px; font-weight: 500; color: var(--ink); }
 .mov-meta { font-size: 11px; color: var(--ink-soft); margin-top: 2px; }
@@ -129,13 +132,39 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
 .mov-valor { font-size: 15px; font-weight: 500; flex-shrink: 0; }
 .mov-valor.ing { color: var(--ingreso); }
 .mov-valor.gas { color: var(--gasto); }
+.mov-valor.warn { color: var(--warn); }
+
+/* ── DIFERIDAS ── */
+.dif-resumen { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+.dif-total { font-size: 26px; font-weight: 300; color: var(--rose-deep); margin: 4px 0 2px; }
+.dif-sub { font-size: 12px; color: var(--ink-soft); }
+.dif-alerta { margin-top: 10px; padding: 8px 12px; background: var(--warn-bg); border-radius: 8px; font-size: 13px; color: var(--warn); font-weight: 500; }
+
+.dif-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 8px; }
+.dif-card:hover { border-color: var(--rose); }
+.dif-card.urgente { border-left: 3px solid var(--rose-deep); }
+.dif-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.dif-nombre { font-size: 14px; font-weight: 500; color: var(--ink); }
+.dif-fecha { font-size: 11px; color: var(--ink-soft); margin-top: 2px; }
+.dif-valores { text-align: right; flex-shrink: 0; }
+.dif-cuota { font-size: 16px; font-weight: 500; color: var(--rose-deep); }
+.dif-cuota-label { font-size: 10px; color: var(--ink-soft); }
+.dif-progress { margin-top: 10px; }
+.dif-progress-bar { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 4px; }
+.dif-progress-fill { height: 100%; background: var(--rose-deep); border-radius: 4px; transition: width 0.3s; }
+.dif-progress-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-soft); margin-top: 4px; }
+.dif-saldo { font-size: 12px; color: var(--ink-soft); margin-top: 6px; }
+.dif-saldo strong { color: var(--rose-dark); }
+.badge-prox { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 8px; background: var(--alta-bg); color: var(--rose-dark); font-weight: 500; margin-top: 4px; }
+.badge-ok { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 8px; background: var(--baja-bg); color: var(--baja); font-weight: 500; margin-top: 4px; }
+
+.section-label { font-size: 11px; color: var(--ink-soft); letter-spacing: 0.04em; margin-bottom: 8px; margin-top: 4px; }
 
 .nestor-total { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; text-align: center; }
 .nestor-n { font-size: 32px; font-weight: 300; color: var(--rose-deep); margin: 8px 0; }
 .nestor-sub { font-size: 12px; color: var(--ink-soft); margin-bottom: 1rem; }
 .btn-nestor { width: 100%; padding: 11px; background: var(--rose-deep); color: white; border: none; border-radius: 10px; font-size: 14px; font-family: 'DM Sans', sans-serif; cursor: pointer; }
 .btn-nestor:hover { opacity: 0.88; }
-.section-label { font-size: 11px; color: var(--ink-soft); letter-spacing: 0.04em; margin-bottom: 8px; margin-top: 4px; }
 
 .fab { position: fixed; bottom: 4.5rem; right: 1.25rem; width: 48px; height: 48px; border-radius: 50%; background: var(--rose-deep); color: white; font-size: 24px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(196,132,143,0.35); z-index: 150; }
 .fab:hover { transform: scale(1.07); }
@@ -355,6 +384,167 @@ var taskFilter = 'todas', expanded = {};
 var gastosTab = 'tarjeta', cuentaTab = 'Confiar';
 var activeNav = 'planner';
 
+// ── Compras diferidas ──────────────────────────────────────────────────────
+// Lógica: cambiaste tarde → la cuota de este mes ya se cobró → próximo mes pagan saldo completo
+// Mercado Pago dic → 5 cuotas restantes de $147.491,67 (sin interés)
+// Amazon y demás diferidas internacionales → 2 cuotas: la 1 ya se cobró, falta 1 (el saldo)
+var DIFERIDAS = [
+  {
+    id: 'turo',
+    nombre: 'TURO INC.',
+    fecha: '22/05/2026',
+    valorTotal: 1502684.71,
+    saldoPendiente: 1460943.47,
+    cuotaActual: 41741.24,
+    cuotasRestantes: 1,
+    totalCuotas: 36,
+    cuotasPagadas: 1,
+    interes: 28.10,
+    nota: 'Saldo a pagar próximo mes (cuotas cambiadas tarde)',
+    urgente: true
+  },
+  {
+    id: 'amazon',
+    nombre: 'AMAZON',
+    fecha: '04/06/2026',
+    valorTotal: 3216516.31,
+    saldoPendiente: 3127168.63,
+    cuotaActual: 89347.68,
+    cuotasRestantes: 1,
+    totalCuotas: 36,
+    cuotasPagadas: 1,
+    interes: 28.75,
+    nota: 'Saldo a pagar próximo mes (cuotas cambiadas tarde)',
+    urgente: true
+  },
+  {
+    id: 'claude',
+    nombre: 'CLAUDE.AI SUBSCRIPTION',
+    fecha: '21/05/2026',
+    valorTotal: 76696.72,
+    saldoPendiente: 74566.26,
+    cuotaActual: 2130.46,
+    cuotasRestantes: 1,
+    totalCuotas: 36,
+    cuotasPagadas: 1,
+    interes: 28.10,
+    nota: 'Saldo a pagar próximo mes',
+    urgente: true
+  },
+  {
+    id: 'apple1',
+    nombre: 'APPLE.COM/BILL (jun)',
+    fecha: '01/06/2026',
+    valorTotal: 44900,
+    saldoPendiente: 43652.78,
+    cuotaActual: 1247.22,
+    cuotasRestantes: 1,
+    totalCuotas: 36,
+    cuotasPagadas: 1,
+    interes: 28.75,
+    nota: 'Saldo a pagar próximo mes',
+    urgente: true
+  },
+  {
+    id: 'apple2',
+    nombre: 'APPLE.COM/BILL (may)',
+    fecha: '01/05/2026',
+    valorTotal: 44900,
+    saldoPendiente: 41157.51,
+    cuotaActual: 1247.22,
+    cuotasRestantes: 1,
+    totalCuotas: 36,
+    cuotasPagadas: 2,
+    interes: 26.70,
+    nota: 'Saldo a pagar próximo mes',
+    urgente: true
+  },
+  {
+    id: 'uber1',
+    nombre: 'UBER *TRIP (may)',
+    fecha: '28/05/2026',
+    valorTotal: 95519.85,
+    saldoPendiente: 92866.52,
+    cuotaActual: 2653.33,
+    cuotasRestantes: 1,
+    totalCuotas: 36,
+    cuotasPagadas: 1,
+    interes: 28.10,
+    nota: 'Saldo a pagar próximo mes',
+    urgente: true
+  },
+  {
+    id: 'uber2',
+    nombre: 'UBER *TRIP (may) #2',
+    fecha: '28/05/2026',
+    valorTotal: 18404.59,
+    saldoPendiente: 17893.35,
+    cuotaActual: 511.24,
+    cuotasRestantes: 1,
+    totalCuotas: 36,
+    cuotasPagadas: 1,
+    interes: 28.10,
+    nota: 'Saldo a pagar próximo mes',
+    urgente: true
+  },
+  {
+    id: 'bath',
+    nombre: 'BATH AND BODY WORKS',
+    fecha: '01/06/2026',
+    valorTotal: 148647.49,
+    saldoPendiente: 144518.39,
+    cuotaActual: 4129.10,
+    cuotasRestantes: 1,
+    totalCuotas: 36,
+    cuotasPagadas: 1,
+    interes: 28.75,
+    nota: 'Saldo a pagar próximo mes',
+    urgente: true
+  },
+  {
+    id: 'mta1',
+    nombre: 'MTA*NYCT PAYGO #1',
+    fecha: '03/06/2026',
+    valorTotal: 31463.61,
+    saldoPendiente: 30589.62,
+    cuotaActual: 873.99,
+    cuotasRestantes: 1,
+    totalCuotas: 36,
+    cuotasPagadas: 1,
+    interes: 28.75,
+    nota: 'Saldo a pagar próximo mes',
+    urgente: true
+  },
+  {
+    id: 'mta2',
+    nombre: 'MTA*NYCT PAYGO #2',
+    fecha: '03/06/2026',
+    valorTotal: 10787.53,
+    saldoPendiente: 10487.88,
+    cuotaActual: 299.65,
+    cuotasRestantes: 1,
+    totalCuotas: 36,
+    cuotasPagadas: 1,
+    interes: 28.75,
+    nota: 'Saldo a pagar próximo mes',
+    urgente: true
+  },
+  {
+    id: 'mercadopago',
+    nombre: 'MERCADOPAGO COLOMBIA',
+    fecha: '09/12/2025',
+    valorTotal: 1769900,
+    saldoPendiente: 737458.31,
+    cuotaActual: 147491.67,
+    cuotasRestantes: 5,
+    totalCuotas: 12,
+    cuotasPagadas: 7,
+    interes: 0,
+    nota: '5 cuotas restantes sin interés',
+    urgente: false
+  }
+];
+
 window.addEventListener('DOMContentLoaded', function() {
   document.getElementById('hdate').textContent = new Date().toLocaleDateString('es-CO', {weekday:'long', day:'numeric', month:'long'});
   initNav();
@@ -408,10 +598,6 @@ function getDateISO(val) {
   return s.substring(0,10);
 }
 
-function getTaskKey(t) {
-  return cicloKey(getDateISO(t.Fecha || t.fecha || ''));
-}
-
 function deadlineLabel(dl) {
   if (!dl) return null;
   var parts = String(dl).split('-');
@@ -462,9 +648,9 @@ function initGastosTabs() {
       gastosTab = this.dataset.g;
       document.querySelectorAll('.gtab').forEach(function(x){ x.classList.remove('on'); });
       this.classList.add('on');
-      document.getElementById('g-tarjeta').style.display = gastosTab === 'tarjeta' ? 'block' : 'none';
-      document.getElementById('g-cuentas').style.display = gastosTab === 'cuentas' ? 'block' : 'none';
-      document.getElementById('g-nestor').style.display  = gastosTab === 'nestor'  ? 'block' : 'none';
+      document.getElementById('g-tarjeta').style.display   = gastosTab === 'tarjeta'   ? 'block' : 'none';
+      document.getElementById('g-cuentas').style.display   = gastosTab === 'cuentas'   ? 'block' : 'none';
+      document.getElementById('g-nestor').style.display    = gastosTab === 'nestor'    ? 'block' : 'none';
       document.getElementById('fab').style.display = gastosTab === 'nestor' ? 'none' : 'flex';
       renderGastos();
     });
@@ -504,6 +690,66 @@ function initOverlay(id) {
   document.getElementById(id).addEventListener('click', function(e) {
     if (e.target === this) this.classList.remove('open');
   });
+}
+
+// ── DIFERIDAS ──────────────────────────────────────────────────────────────
+function renderDiferidas() {
+  var totalSaldo = DIFERIDAS.reduce(function(s,d){ return s + d.saldoPendiente; }, 0);
+  var proxMes = DIFERIDAS.reduce(function(s,d){ return s + d.saldoPendiente; }, 0);
+  // próximo mes = saldo completo de urgentes + cuota normal de mercadopago
+  var proxPago = DIFERIDAS.filter(function(d){ return d.urgente; }).reduce(function(s,d){ return s + d.saldoPendiente; }, 0)
+               + DIFERIDAS.filter(function(d){ return !d.urgente; }).reduce(function(s,d){ return s + d.cuotaActual; }, 0);
+
+  var html = '<div class="dif-resumen">';
+  html += '<div class="ciclo-label">SALDO TOTAL DIFERIDO</div>';
+  html += '<div class="dif-total">' + fmt(totalSaldo) + '</div>';
+  html += '<div class="dif-sub">' + DIFERIDAS.length + ' compras activas</div>';
+  html += '<div class="dif-alerta">⚠️ Próximo mes debes pagar aprox. ' + fmt(proxPago) + ' por los diferidos</div>';
+  html += '</div>';
+
+  // Urgentes primero
+  var urgentes = DIFERIDAS.filter(function(d){ return d.urgente; });
+  var normales = DIFERIDAS.filter(function(d){ return !d.urgente; });
+
+  if (urgentes.length) {
+    html += '<div class="section-label" style="margin-bottom:10px">PRÓXIMO MES — PAGO TOTAL DEL SALDO</div>';
+    urgentes.forEach(function(d) {
+      var pct = Math.round((d.cuotasPagadas / d.totalCuotas) * 100);
+      html += '<div class="dif-card urgente">';
+      html += '<div class="dif-header">';
+      html += '<div><div class="dif-nombre">' + d.nombre + '</div><div class="dif-fecha">' + d.fecha + '</div></div>';
+      html += '<div class="dif-valores"><div class="dif-cuota">' + fmt(d.saldoPendiente) + '</div><div class="dif-cuota-label">saldo a pagar</div></div>';
+      html += '</div>';
+      html += '<div class="dif-progress">';
+      html += '<div class="dif-progress-bar"><div class="dif-progress-fill" style="width:' + pct + '%"></div></div>';
+      html += '<div class="dif-progress-label"><span>' + d.cuotasPagadas + '/' + d.totalCuotas + ' cuotas pagadas</span><span>' + pct + '%</span></div>';
+      html += '</div>';
+      if (d.interes > 0) html += '<div class="dif-saldo">Interés: <strong>' + d.interes + '% anual</strong> · Compra original: ' + fmt(d.valorTotal) + '</div>';
+      html += '<div class="badge-prox">Pago próximo mes</div>';
+      html += '</div>';
+    });
+  }
+
+  if (normales.length) {
+    html += '<div class="section-label" style="margin-top:16px;margin-bottom:10px">CUOTAS MENSUALES</div>';
+    normales.forEach(function(d) {
+      var pct = Math.round((d.cuotasPagadas / d.totalCuotas) * 100);
+      html += '<div class="dif-card">';
+      html += '<div class="dif-header">';
+      html += '<div><div class="dif-nombre">' + d.nombre + '</div><div class="dif-fecha">' + d.fecha + '</div></div>';
+      html += '<div class="dif-valores"><div class="dif-cuota">' + fmt(d.cuotaActual) + '</div><div class="dif-cuota-label">cuota mensual</div></div>';
+      html += '</div>';
+      html += '<div class="dif-progress">';
+      html += '<div class="dif-progress-bar"><div class="dif-progress-fill" style="width:' + pct + '%"></div></div>';
+      html += '<div class="dif-progress-label"><span>' + d.cuotasPagadas + '/' + d.totalCuotas + ' cuotas pagadas</span><span>' + pct + '%</span></div>';
+      html += '</div>';
+      html += '<div class="dif-saldo">Saldo pendiente: <strong>' + fmt(d.saldoPendiente) + '</strong> · ' + d.cuotasRestantes + ' cuotas restantes</div>';
+      if (!d.interes) html += '<div class="badge-ok">Sin interés</div>';
+      html += '</div>';
+    });
+  }
+
+  document.getElementById('diferidas-content').innerHTML = html;
 }
 
 // PLANNER
@@ -765,23 +1011,67 @@ function renderTarjeta() {
     return h;
   }
 
-  function cardsHTML(gastos) {
-    if (!gastos.length) return '<div class="empty">Sin gastos en este ciclo</div>';
-    var sorted = gastos.slice().sort(function(a,b){ return String(b.Fecha).localeCompare(String(a.Fecha)); });
-    return sorted.map(function(t) {
-      var r = String(t.Reembolso_Nestor||'');
-      var reemb = (r && r !== 'No') ? r : '';
-      var h = '<div class="mov-card">';
-      h += '<div class="mov-dot gas"></div>';
-      h += '<div class="mov-body">';
-      h += '<div class="mov-desc">' + (t.Descripcion||'') + '</div>';
-      h += '<div class="mov-meta">' + getDateISO(t.Fecha||'') + '</div>';
-      if (reemb) h += '<div class="mov-reembolso">Reembolso Nestor · ' + reemb + '</div>';
-      h += '</div>';
-      h += '<div class="mov-valor gas">' + fmt(t.Valor) + '</div>';
-      h += '<button class="del-btn" data-deltarjeta="' + t.ID + '">&#215;</button>';
-      h += '</div>';
-      return h;
+  function difToIso(fechaStr) {
+    // convierte "22/05/2026" → "2026-05-22"
+    if (!fechaStr) return '';
+    var p = String(fechaStr).split('/');
+    if (p.length === 3) return p[2] + '-' + p[1].padStart(2,'0') + '-' + p[0].padStart(2,'0');
+    return fechaStr;
+  }
+
+  function buildMovList(gastos, includeDiferidas) {
+    // Gastos normales
+    var items = gastos.map(function(t) {
+      return { tipo: 'gasto', fecha: getDateISO(t.Fecha||''), data: t };
+    });
+
+    // Agregar diferidas si corresponde
+    if (includeDiferidas) {
+      DIFERIDAS.forEach(function(d) {
+        items.push({ tipo: 'diferida', fecha: difToIso(d.fecha), data: d });
+      });
+    }
+
+    // Ordenar por fecha desc
+    items.sort(function(a,b){ return b.fecha.localeCompare(a.fecha); });
+
+    if (!items.length) return '<div class="empty">Sin movimientos en este ciclo</div>';
+
+    return items.map(function(item) {
+      if (item.tipo === 'gasto') {
+        var t = item.data;
+        var r = String(t.Reembolso_Nestor||'');
+        var reemb = (r && r !== 'No') ? r : '';
+        var h = '<div class="mov-card">';
+        h += '<div class="mov-dot gas"></div>';
+        h += '<div class="mov-body">';
+        h += '<div class="mov-desc">' + (t.Descripcion||'') + '</div>';
+        h += '<div class="mov-meta">' + item.fecha + '</div>';
+        if (reemb) h += '<div class="mov-reembolso">Reembolso Nestor · ' + reemb + '</div>';
+        h += '</div>';
+        h += '<div class="mov-valor gas">' + fmt(t.Valor) + '</div>';
+        h += '<button class="del-btn" data-deltarjeta="' + t.ID + '">&#215;</button>';
+        h += '</div>';
+        return h;
+      } else {
+        var d = item.data;
+        var h = '<div class="mov-card" style="border-left:3px solid var(--rose-deep)">';
+        h += '<div class="mov-dot warn"></div>';
+        h += '<div class="mov-body">';
+        h += '<div class="mov-desc">' + d.nombre + '</div>';
+        h += '<div class="mov-meta">' + item.fecha;
+        if (d.interes > 0) h += ' · ' + d.interes + '% anual';
+        h += '</div>';
+        h += '<div style="font-size:11px;margin-top:3px;display:flex;gap:8px;flex-wrap:wrap">';
+        h += '<span style="color:var(--ink-soft)">Cuota cobrada: <strong style="color:var(--rose-dark)">' + fmt(d.cuotaActual) + '</strong></span>';
+        h += '<span style="color:var(--ink-soft)">Saldo pendiente: <strong style="color:var(--rose-dark)">' + fmt(d.saldoPendiente) + '</strong></span>';
+        if (d.urgente) h += '<span style="background:var(--alta-bg);color:var(--rose-dark);font-size:10px;padding:1px 7px;border-radius:8px;font-weight:500">Próximo mes pago total</span>';
+        h += '</div>';
+        h += '</div>';
+        h += '<div class="mov-valor warn">' + fmt(d.valorTotal) + '</div>';
+        h += '</div>';
+        return h;
+      }
     }).join('');
   }
 
@@ -793,7 +1083,10 @@ function renderTarjeta() {
   }
 
   document.getElementById('tarjeta-banners').innerHTML = bannersHTML;
-  document.getElementById('tarjeta-list').innerHTML = cardsHTML(gastosAct) + (anteriorPendiente ? cardsHTML(gastosAnt) : '');
+  // Diferidas solo se muestran en el ciclo actual
+  document.getElementById('tarjeta-list').innerHTML =
+    buildMovList(gastosAct, true) +
+    (anteriorPendiente ? '<div class="section-label" style="margin-top:12px">CICLO ANTERIOR</div>' + buildMovList(gastosAnt, false) : '');
   document.getElementById('tarjeta-list').querySelectorAll('[data-deltarjeta]').forEach(function(el){
     el.addEventListener('click', function(){ deleteGastoTarjeta(el.dataset.deltarjeta); });
   });
@@ -976,9 +1269,9 @@ function renderNestor() {
 }
 
 function renderGastos() {
-  if (gastosTab === 'tarjeta') renderTarjeta();
-  else if (gastosTab === 'cuentas') renderCuentas();
-  else if (gastosTab === 'nestor') renderNestor();
+  if (gastosTab === 'tarjeta')   renderTarjeta();
+  else if (gastosTab === 'cuentas')   renderCuentas();
+  else if (gastosTab === 'nestor')    renderNestor();
 }
 </script>
 </body>
