@@ -817,25 +817,52 @@ function renderTarjeta() {
   inicioAnt = new Date(inicioAct.getFullYear(), inicioAct.getMonth()-1, 15);
   finAnt    = new Date(inicioAct.getFullYear(), inicioAct.getMonth(), 14);
 
-  var ckAct = cicloKey(inicioAct.toISOString().split('T')[0]);
-  var ckAnt = cicloKey(inicioAnt.toISOString().split('T')[0]);
-
   var mesPagoAct = new Date(finAct.getFullYear(), finAct.getMonth()+1, 1).toLocaleDateString('es-CO',{month:'long'});
   var mesPagoAnt = new Date(finAnt.getFullYear(), finAnt.getMonth()+1, 1).toLocaleDateString('es-CO',{month:'long'});
   var mesPagoAntFecha = new Date(finAnt.getFullYear(), finAnt.getMonth()+1, 3);
   var anteriorPendiente = hoy <= mesPagoAntFecha;
 
+  // Calcular en qué ciclo cae la próxima cuota de una compra
+  // basado en: fecha compra + cuotas ya pagadas → mes del próximo cobro
+  function cicloProximaCuota(t) {
+    var fechaISO = getDateISO(t.Fecha || t.fecha || '');
+    if (!fechaISO) return '';
+    var partes = fechaISO.split('-');
+    var anio = parseInt(partes[0]);
+    var mes  = parseInt(partes[1]) - 1; // 0-indexed
+    var pagadas = parseInt(t.CuotasPagadas || 0);
+    // La próxima cuota cae pagadas meses después de la compra
+    var fechaProxima = new Date(anio, mes + pagadas, 1);
+    return cicloKey(fechaProxima.toISOString().split('T')[0]);
+  }
+
+  // Una compra aparece en un ciclo si su próxima cuota cae en ese ciclo
+  function cuotaEnCiclo(t, ck) {
+    var cuotas = parseInt(t.Cuotas || 1);
+    var pagadas = parseInt(t.CuotasPagadas || 0);
+    var valor = Number(t.Valor || 0);
+    if (valor < 0) return false; // devoluciones no tienen cuotas
+    if (cuotas <= 1) {
+      // contado: usar fecha de compra directamente
+      return cicloKey(getDateISO(t.Fecha || '')) === ck;
+    }
+    if (pagadas >= cuotas) return false; // ya terminó
+    return cicloProximaCuota(t) === ck;
+  }
+
+  var ckAct = cicloKey(inicioAct.toISOString().split('T')[0]);
+  var ckAnt = cicloKey(inicioAnt.toISOString().split('T')[0]);
+
+  // Devoluciones siguen usando fecha de registro
   function getKey(t) {
     return cicloKey(getDateISO(t.Fecha || t.fecha || ''));
   }
 
-  // Separar compras (valor >= 0) de abonos/devoluciones (valor < 0) dentro de tarjeta
-  var comprasAct = tarjeta.filter(function(t){ return getKey(t)===ckAct && Number(t.Valor||0) >= 0; });
-  var devAct     = tarjeta.filter(function(t){ return getKey(t)===ckAct && Number(t.Valor||0) < 0; });
-  var comprasAnt = tarjeta.filter(function(t){ return getKey(t)===ckAnt && Number(t.Valor||0) >= 0; });
-  var devAnt     = tarjeta.filter(function(t){ return getKey(t)===ckAnt && Number(t.Valor||0) < 0; });
+  var comprasAct = tarjeta.filter(function(t){ return cuotaEnCiclo(t, ckAct); });
+  var devAct     = tarjeta.filter(function(t){ return Number(t.Valor||0) < 0 && getKey(t)===ckAct; });
+  var comprasAnt = tarjeta.filter(function(t){ return cuotaEnCiclo(t, ckAnt); });
+  var devAnt     = tarjeta.filter(function(t){ return Number(t.Valor||0) < 0 && getKey(t)===ckAnt; });
 
-  // Total ciclo = suma cuotas de compras diferidas + contado - devoluciones
   function cuotaDelCiclo(t) {
     var cuotas = parseInt(t.Cuotas||1);
     var interes = parseFloat(t.Interes||0);
