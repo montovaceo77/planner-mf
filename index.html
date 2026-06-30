@@ -303,19 +303,35 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
 <!-- Modal gasto tarjeta -->
 <div class="overlay" id="overlay-tarjeta">
   <div class="modal">
-    <div class="modal-title">Gasto Visa Platinum</div>
-    <div class="field"><label>DESCRIPCION</label><input id="t-desc" placeholder="En que?" /></div>
+    <div class="modal-title" id="modal-tarjeta-title">Nueva compra</div>
+    <div class="field"><label>DESCRIPCIÓN</label><input id="t-desc" placeholder="¿En qué?" /></div>
     <div class="field-row">
-      <div class="field"><label>VALOR ($)</label><input type="number" id="t-valor" placeholder="0" /></div>
+      <div class="field"><label>VALOR TOTAL ($)</label><input type="number" id="t-valor" placeholder="0" /></div>
       <div class="field"><label>FECHA</label><input type="date" id="t-fecha" /></div>
     </div>
-    <div class="field"><label>REEMBOLSO NESTOR</label>
+    <div class="field-row">
+      <div class="field"><label>NÚMERO DE CUOTAS</label>
+        <select id="t-cuotas">
+          <option value="1">1 cuota (contado)</option>
+          <option value="2">2 cuotas</option>
+          <option value="3">3 cuotas</option>
+          <option value="6">6 cuotas</option>
+          <option value="12">12 cuotas</option>
+          <option value="24">24 cuotas</option>
+          <option value="36">36 cuotas</option>
+        </select>
+      </div>
+      <div class="field"><label>INTERÉS ANUAL (%)</label><input type="number" id="t-interes" placeholder="28.75" value="28.75" step="0.01" /></div>
+    </div>
+    <div class="field" id="t-cuota-preview" style="background:var(--rose-pale);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--ink-mid);display:none"></div>
+    <div class="field"><label>REEMBOLSO NÉSTOR</label>
       <select id="t-reembolso">
         <option value="No">No</option>
-        <option value="Si">Si, pendiente</option>
-        <option value="Recibido">Si, ya recibido</option>
+        <option value="Si">Sí, pendiente</option>
+        <option value="Recibido">Sí, ya recibido</option>
       </select>
     </div>
+    <input type="hidden" id="t-edit-id" value="" />
     <div class="modal-actions">
       <button class="btn-secondary" id="btn-cancel-tarjeta">Cancelar</button>
       <button class="btn-primary" id="btn-save-tarjeta">Guardar</button>
@@ -383,167 +399,6 @@ var tasks = [], tarjeta = [], cuentas = [], abonos = [];
 var taskFilter = 'todas', expanded = {};
 var gastosTab = 'tarjeta', cuentaTab = 'Confiar';
 var activeNav = 'planner';
-
-// ── Compras diferidas ──────────────────────────────────────────────────────
-// Lógica: cambiaste tarde → la cuota de este mes ya se cobró → próximo mes pagan saldo completo
-// Mercado Pago dic → 5 cuotas restantes de $147.491,67 (sin interés)
-// Amazon y demás diferidas internacionales → 2 cuotas: la 1 ya se cobró, falta 1 (el saldo)
-var DIFERIDAS = [
-  {
-    id: 'turo',
-    nombre: 'TURO INC.',
-    fecha: '22/05/2026',
-    valorTotal: 1502684.71,
-    saldoPendiente: 242332.47,
-    cuotaActual: 41741.24,
-    cuotasRestantes: 1,
-    totalCuotas: 36,
-    cuotasPagadas: 1,
-    interes: 28.10,
-    nota: 'Saldo a pagar próximo mes (devoluciones ya aplicadas)',
-    urgente: true
-  },
-  {
-    id: 'amazon',
-    nombre: 'AMAZON',
-    fecha: '04/06/2026',
-    valorTotal: 3216516.31,
-    saldoPendiente: 3127168.63,
-    cuotaActual: 89347.68,
-    cuotasRestantes: 1,
-    totalCuotas: 36,
-    cuotasPagadas: 1,
-    interes: 28.75,
-    nota: 'Saldo a pagar próximo mes (cuotas cambiadas tarde)',
-    urgente: true
-  },
-  {
-    id: 'claude',
-    nombre: 'CLAUDE.AI SUBSCRIPTION',
-    fecha: '21/05/2026',
-    valorTotal: 76696.72,
-    saldoPendiente: 74566.26,
-    cuotaActual: 2130.46,
-    cuotasRestantes: 1,
-    totalCuotas: 36,
-    cuotasPagadas: 1,
-    interes: 28.10,
-    nota: 'Saldo a pagar próximo mes',
-    urgente: true
-  },
-  {
-    id: 'apple1',
-    nombre: 'APPLE.COM/BILL (jun)',
-    fecha: '01/06/2026',
-    valorTotal: 44900,
-    saldoPendiente: 43652.78,
-    cuotaActual: 1247.22,
-    cuotasRestantes: 1,
-    totalCuotas: 36,
-    cuotasPagadas: 1,
-    interes: 28.75,
-    nota: 'Saldo a pagar próximo mes',
-    urgente: true
-  },
-  {
-    id: 'apple2',
-    nombre: 'APPLE.COM/BILL (may)',
-    fecha: '01/05/2026',
-    valorTotal: 44900,
-    saldoPendiente: 41157.51,
-    cuotaActual: 1247.22,
-    cuotasRestantes: 1,
-    totalCuotas: 36,
-    cuotasPagadas: 2,
-    interes: 26.70,
-    nota: 'Saldo a pagar próximo mes',
-    urgente: true
-  },
-  {
-    id: 'uber1',
-    nombre: 'UBER *TRIP (may)',
-    fecha: '28/05/2026',
-    valorTotal: 95519.85,
-    saldoPendiente: 92866.52,
-    cuotaActual: 2653.33,
-    cuotasRestantes: 1,
-    totalCuotas: 36,
-    cuotasPagadas: 1,
-    interes: 28.10,
-    nota: 'Saldo a pagar próximo mes',
-    urgente: true
-  },
-  {
-    id: 'uber2',
-    nombre: 'UBER *TRIP (may) #2',
-    fecha: '28/05/2026',
-    valorTotal: 18404.59,
-    saldoPendiente: 17893.35,
-    cuotaActual: 511.24,
-    cuotasRestantes: 1,
-    totalCuotas: 36,
-    cuotasPagadas: 1,
-    interes: 28.10,
-    nota: 'Saldo a pagar próximo mes',
-    urgente: true
-  },
-  {
-    id: 'bath',
-    nombre: 'BATH AND BODY WORKS',
-    fecha: '01/06/2026',
-    valorTotal: 148647.49,
-    saldoPendiente: 144518.39,
-    cuotaActual: 4129.10,
-    cuotasRestantes: 1,
-    totalCuotas: 36,
-    cuotasPagadas: 1,
-    interes: 28.75,
-    nota: 'Saldo a pagar próximo mes',
-    urgente: true
-  },
-  {
-    id: 'mta1',
-    nombre: 'MTA*NYCT PAYGO #1',
-    fecha: '03/06/2026',
-    valorTotal: 31463.61,
-    saldoPendiente: 30589.62,
-    cuotaActual: 873.99,
-    cuotasRestantes: 1,
-    totalCuotas: 36,
-    cuotasPagadas: 1,
-    interes: 28.75,
-    nota: 'Saldo a pagar próximo mes',
-    urgente: true
-  },
-  {
-    id: 'mta2',
-    nombre: 'MTA*NYCT PAYGO #2',
-    fecha: '03/06/2026',
-    valorTotal: 10787.53,
-    saldoPendiente: 10487.88,
-    cuotaActual: 299.65,
-    cuotasRestantes: 1,
-    totalCuotas: 36,
-    cuotasPagadas: 1,
-    interes: 28.75,
-    nota: 'Saldo a pagar próximo mes',
-    urgente: true
-  },
-  {
-    id: 'mercadopago',
-    nombre: 'MERCADOPAGO COLOMBIA',
-    fecha: '09/12/2025',
-    valorTotal: 1769900,
-    saldoPendiente: 737458.31,
-    cuotaActual: 147491.67,
-    cuotasRestantes: 5,
-    totalCuotas: 12,
-    cuotasPagadas: 7,
-    interes: 0,
-    nota: '5 cuotas restantes sin interés',
-    urgente: false
-  }
-];
 
 window.addEventListener('DOMContentLoaded', function() {
   document.getElementById('hdate').textContent = new Date().toLocaleDateString('es-CO', {weekday:'long', day:'numeric', month:'long'});
@@ -690,66 +545,6 @@ function initOverlay(id) {
   document.getElementById(id).addEventListener('click', function(e) {
     if (e.target === this) this.classList.remove('open');
   });
-}
-
-// ── DIFERIDAS ──────────────────────────────────────────────────────────────
-function renderDiferidas() {
-  var totalSaldo = DIFERIDAS.reduce(function(s,d){ return s + d.saldoPendiente; }, 0);
-  var proxMes = DIFERIDAS.reduce(function(s,d){ return s + d.saldoPendiente; }, 0);
-  // próximo mes = saldo completo de urgentes + cuota normal de mercadopago
-  var proxPago = DIFERIDAS.filter(function(d){ return d.urgente; }).reduce(function(s,d){ return s + d.saldoPendiente; }, 0)
-               + DIFERIDAS.filter(function(d){ return !d.urgente; }).reduce(function(s,d){ return s + d.cuotaActual; }, 0);
-
-  var html = '<div class="dif-resumen">';
-  html += '<div class="ciclo-label">SALDO TOTAL DIFERIDO</div>';
-  html += '<div class="dif-total">' + fmt(totalSaldo) + '</div>';
-  html += '<div class="dif-sub">' + DIFERIDAS.length + ' compras activas</div>';
-  html += '<div class="dif-alerta">⚠️ Próximo mes debes pagar aprox. ' + fmt(proxPago) + ' por los diferidos</div>';
-  html += '</div>';
-
-  // Urgentes primero
-  var urgentes = DIFERIDAS.filter(function(d){ return d.urgente; });
-  var normales = DIFERIDAS.filter(function(d){ return !d.urgente; });
-
-  if (urgentes.length) {
-    html += '<div class="section-label" style="margin-bottom:10px">PRÓXIMO MES — PAGO TOTAL DEL SALDO</div>';
-    urgentes.forEach(function(d) {
-      var pct = Math.round((d.cuotasPagadas / d.totalCuotas) * 100);
-      html += '<div class="dif-card urgente">';
-      html += '<div class="dif-header">';
-      html += '<div><div class="dif-nombre">' + d.nombre + '</div><div class="dif-fecha">' + d.fecha + '</div></div>';
-      html += '<div class="dif-valores"><div class="dif-cuota">' + fmt(d.saldoPendiente) + '</div><div class="dif-cuota-label">saldo a pagar</div></div>';
-      html += '</div>';
-      html += '<div class="dif-progress">';
-      html += '<div class="dif-progress-bar"><div class="dif-progress-fill" style="width:' + pct + '%"></div></div>';
-      html += '<div class="dif-progress-label"><span>' + d.cuotasPagadas + '/' + d.totalCuotas + ' cuotas pagadas</span><span>' + pct + '%</span></div>';
-      html += '</div>';
-      if (d.interes > 0) html += '<div class="dif-saldo">Interés: <strong>' + d.interes + '% anual</strong> · Compra original: ' + fmt(d.valorTotal) + '</div>';
-      html += '<div class="badge-prox">Pago próximo mes</div>';
-      html += '</div>';
-    });
-  }
-
-  if (normales.length) {
-    html += '<div class="section-label" style="margin-top:16px;margin-bottom:10px">CUOTAS MENSUALES</div>';
-    normales.forEach(function(d) {
-      var pct = Math.round((d.cuotasPagadas / d.totalCuotas) * 100);
-      html += '<div class="dif-card">';
-      html += '<div class="dif-header">';
-      html += '<div><div class="dif-nombre">' + d.nombre + '</div><div class="dif-fecha">' + d.fecha + '</div></div>';
-      html += '<div class="dif-valores"><div class="dif-cuota">' + fmt(d.cuotaActual) + '</div><div class="dif-cuota-label">cuota mensual</div></div>';
-      html += '</div>';
-      html += '<div class="dif-progress">';
-      html += '<div class="dif-progress-bar"><div class="dif-progress-fill" style="width:' + pct + '%"></div></div>';
-      html += '<div class="dif-progress-label"><span>' + d.cuotasPagadas + '/' + d.totalCuotas + ' cuotas pagadas</span><span>' + pct + '%</span></div>';
-      html += '</div>';
-      html += '<div class="dif-saldo">Saldo pendiente: <strong>' + fmt(d.saldoPendiente) + '</strong> · ' + d.cuotasRestantes + ' cuotas restantes</div>';
-      if (!d.interes) html += '<div class="badge-ok">Sin interés</div>';
-      html += '</div>';
-    });
-  }
-
-  document.getElementById('diferidas-content').innerHTML = html;
 }
 
 // PLANNER
@@ -908,7 +703,23 @@ function initEditModal() {
   });
 }
 
-// TARJETA
+// TARJETA — nueva lógica completa
+function calcCuota(valor, cuotas, interesAnual) {
+  if (cuotas <= 1) return valor;
+  var im = interesAnual / 100 / 12;
+  if (im === 0) return valor / cuotas;
+  return valor * im * Math.pow(1+im, cuotas) / (Math.pow(1+im, cuotas) - 1);
+}
+
+function calcSaldoPendiente(valor, cuotas, interesAnual, cuotasPagadas) {
+  if (cuotas <= 1) return 0;
+  var im = interesAnual / 100 / 12;
+  var cuota = calcCuota(valor, cuotas, interesAnual);
+  if (im === 0) return valor - (cuota * cuotasPagadas);
+  var saldo = valor * Math.pow(1+im, cuotasPagadas) - cuota * (Math.pow(1+im, cuotasPagadas) - 1) / im;
+  return Math.max(0, saldo);
+}
+
 function fetchTarjeta() {
   fetch(WS + '?action=getTarjeta').then(function(r){ return r.json(); }).then(function(data) {
     tarjeta = Array.isArray(data) ? data : [];
@@ -925,15 +736,58 @@ function fetchAbonos() {
 
 function addGastoTarjeta(d) {
   var tempId = Date.now();
-  tarjeta.push({ID:tempId, Fecha:d.fecha, Descripcion:d.descripcion, Valor:d.valor, Ciclo:cicloKey(d.fecha), Reembolso_Nestor:d.reembolso||'No'});
+  var cuotas = parseInt(d.cuotas) || 1;
+  var interes = parseFloat(d.interes) || 0;
+  var valor = Number(d.valor);
+  var cuotaVal = cuotas <= 1 ? valor : calcCuota(valor, cuotas, interes);
+  tarjeta.push({
+    ID: tempId,
+    Fecha: d.fecha,
+    Descripcion: d.descripcion,
+    Valor: valor,
+    Cuotas: cuotas,
+    Interes: interes,
+    CuotaValor: cuotaVal,
+    CuotasPagadas: 0,
+    Ciclo: cicloKey(d.fecha),
+    Reembolso_Nestor: d.reembolso || 'No'
+  });
   renderTarjeta();
-  showToast('Gasto guardado');
-  sendToServer({action:'addTarjeta', fecha:d.fecha, descripcion:d.descripcion, valor:d.valor, ciclo:cicloKey(d.fecha), reembolso:d.reembolso||'No'});
+  showToast(valor < 0 ? 'Abono registrado' : 'Compra guardada');
+  sendToServer({
+    action: 'addTarjeta',
+    fecha: d.fecha,
+    descripcion: d.descripcion,
+    valor: valor,
+    cuotas: cuotas,
+    interes: interes,
+    cuotaValor: cuotaVal,
+    cuotasPagadas: 0,
+    ciclo: cicloKey(d.fecha),
+    reembolso: d.reembolso || 'No'
+  });
   setTimeout(fetchTarjeta, 5000);
 }
 
+function editGastoTarjeta(id, d) {
+  var t = tarjeta.find(function(x){ return String(x.ID)===String(id); });
+  if (!t) return;
+  var cuotas = parseInt(d.cuotas) || 1;
+  var interes = parseFloat(d.interes) || 0;
+  var valor = Number(d.valor);
+  t.Descripcion = d.descripcion;
+  t.Valor = valor;
+  t.Cuotas = cuotas;
+  t.Interes = interes;
+  t.CuotaValor = cuotas <= 1 ? valor : calcCuota(valor, cuotas, interes);
+  t.Reembolso_Nestor = d.reembolso || 'No';
+  renderTarjeta();
+  showToast('Compra actualizada');
+  sendToServer({ action: 'updateTarjeta', id: id, descripcion: d.descripcion, valor: valor, cuotas: cuotas, interes: interes, reembolso: d.reembolso || 'No' });
+}
+
 function deleteGastoTarjeta(id) {
-  if (!confirm('Eliminar este gasto?')) return;
+  if (!confirm('Eliminar este registro?')) return;
   tarjeta = tarjeta.filter(function(t){ return String(t.ID)!==String(id); });
   renderTarjeta();
   sendToServer({action:'deleteTarjeta', id:id});
@@ -966,23 +820,32 @@ function renderTarjeta() {
 
   var mesPagoAct = new Date(finAct.getFullYear(), finAct.getMonth()+1, 1).toLocaleDateString('es-CO',{month:'long'});
   var mesPagoAnt = new Date(finAnt.getFullYear(), finAnt.getMonth()+1, 1).toLocaleDateString('es-CO',{month:'long'});
-
   var mesPagoAntFecha = new Date(finAnt.getFullYear(), finAnt.getMonth()+1, 3);
   var anteriorPendiente = hoy <= mesPagoAntFecha;
 
   function getKey(t) {
-    var iso = getDateISO(t.Fecha || t.fecha || '');
-    return cicloKey(iso);
+    return cicloKey(getDateISO(t.Fecha || t.fecha || ''));
   }
 
-  var gastosAct = tarjeta.filter(function(t){ return getKey(t)===ckAct; });
-  var gastosAnt = tarjeta.filter(function(t){ return getKey(t)===ckAnt; });
-  var totalAct  = gastosAct.reduce(function(s,t){ return s+Number(t.Valor||0); }, 0);
-  var totalAnt  = gastosAnt.reduce(function(s,t){ return s+Number(t.Valor||0); }, 0);
+  // Separar compras (valor >= 0) de abonos/devoluciones (valor < 0) dentro de tarjeta
+  var comprasAct = tarjeta.filter(function(t){ return getKey(t)===ckAct && Number(t.Valor||0) >= 0; });
+  var devAct     = tarjeta.filter(function(t){ return getKey(t)===ckAct && Number(t.Valor||0) < 0; });
+  var comprasAnt = tarjeta.filter(function(t){ return getKey(t)===ckAnt && Number(t.Valor||0) >= 0; });
+  var devAnt     = tarjeta.filter(function(t){ return getKey(t)===ckAnt && Number(t.Valor||0) < 0; });
 
-  // Saldos pendientes de diferidas = lo que Bancolombia incluye en el pago total
-  var totalSaldosDiferidas = DIFERIDAS.reduce(function(s,d){ return s + d.saldoPendiente; }, 0);
-  totalAnt = totalAnt + totalSaldosDiferidas;
+  // Total ciclo = suma cuotas de compras diferidas + contado - devoluciones
+  function cuotaDelCiclo(t) {
+    var cuotas = parseInt(t.Cuotas||1);
+    var interes = parseFloat(t.Interes||0);
+    var valor = Number(t.Valor||0);
+    if (cuotas <= 1) return valor;
+    return calcCuota(valor, cuotas, interes);
+  }
+
+  var totalCuotasAct = comprasAct.reduce(function(s,t){ return s + cuotaDelCiclo(t); }, 0);
+  var totalDevAct    = devAct.reduce(function(s,t){ return s + Math.abs(Number(t.Valor||0)); }, 0);
+  var totalCuotasAnt = comprasAnt.reduce(function(s,t){ return s + cuotaDelCiclo(t); }, 0);
+  var totalDevAnt    = devAnt.reduce(function(s,t){ return s + Math.abs(Number(t.Valor||0)); }, 0);
 
   function abonadoEnRango(desde, hasta) {
     return abonos.filter(function(a){
@@ -996,10 +859,10 @@ function renderTarjeta() {
   var inicioAntStr = inicioAnt.toISOString().split('T')[0];
   var finAntStr    = finAnt.toISOString().split('T')[0];
 
-  var abonadoAct = abonadoEnRango(inicioActStr, finActStr);
-  var abonadoAnt = abonadoEnRango(inicioAntStr, finAntStr);
-  var pendienteAct = Math.max(0, totalAct - abonadoAct);
-  var pendienteAnt = Math.max(0, totalAnt - abonadoAnt);
+  var abonadoAct = abonadoEnRango(inicioActStr, finActStr) + totalDevAct;
+  var abonadoAnt = abonadoEnRango(inicioAntStr, finAntStr) + totalDevAnt;
+  var pendienteAct = Math.max(0, totalCuotasAct - abonadoAct);
+  var pendienteAnt = Math.max(0, totalCuotasAnt - abonadoAnt);
 
   function bannerHTML(label, total, abonado, pendiente, desde, hasta, mesPago, borderColor) {
     var style = borderColor ? 'style="border-color:' + borderColor + '"' : '';
@@ -1008,106 +871,138 @@ function renderTarjeta() {
     h += '<div class="ciclo-valor">' + fmt(total) + '</div>';
     h += '<div class="ciclo-fechas">' + desde + ' &mdash; ' + hasta + '</div>';
     if (abonado > 0) {
-      h += '<div style="font-size:12px;color:var(--ink-soft);margin-top:6px">Abonado: ' + fmt(abonado) + ' &nbsp;|&nbsp; <strong style="color:var(--rose-dark)">Pendiente: ' + fmt(pendiente) + '</strong></div>';
+      h += '<div style="font-size:12px;color:var(--ink-soft);margin-top:6px">Abonado/dev: ' + fmt(abonado) + ' &nbsp;|&nbsp; <strong style="color:var(--rose-dark)">Pendiente: ' + fmt(pendiente) + '</strong></div>';
     }
     h += '<div class="pago-alerta">Pagar antes del 3 de ' + mesPago + '</div>';
     h += '</div>';
     return h;
   }
 
-  function difToIso(fechaStr) {
-    // convierte "22/05/2026" → "2026-05-22"
-    if (!fechaStr) return '';
-    var p = String(fechaStr).split('/');
-    if (p.length === 3) return p[2] + '-' + p[1].padStart(2,'0') + '-' + p[0].padStart(2,'0');
-    return fechaStr;
-  }
-
-  function buildMovList(gastos, includeDiferidas) {
-    // Gastos normales
-    var items = gastos.map(function(t) {
-      return { tipo: 'gasto', fecha: getDateISO(t.Fecha||''), data: t };
-    });
-
-    // Agregar diferidas si corresponde
-    if (includeDiferidas) {
-      DIFERIDAS.forEach(function(d) {
-        items.push({ tipo: 'diferida', fecha: difToIso(d.fecha), data: d });
-      });
-    }
-
-    // Ordenar por fecha desc
+  function cardsHTML(compras, devs) {
+    var items = compras.map(function(t){ return {tipo:'compra', fecha:getDateISO(t.Fecha||''), data:t}; })
+      .concat(devs.map(function(t){ return {tipo:'dev', fecha:getDateISO(t.Fecha||''), data:t}; }));
     items.sort(function(a,b){ return b.fecha.localeCompare(a.fecha); });
 
     if (!items.length) return '<div class="empty">Sin movimientos en este ciclo</div>';
 
     return items.map(function(item) {
-      if (item.tipo === 'gasto') {
-        var t = item.data;
-        var r = String(t.Reembolso_Nestor||'');
-        var reemb = (r && r !== 'No') ? r : '';
-        var h = '<div class="mov-card">';
-        h += '<div class="mov-dot gas"></div>';
-        h += '<div class="mov-body">';
-        h += '<div class="mov-desc">' + (t.Descripcion||'') + '</div>';
-        h += '<div class="mov-meta">' + item.fecha + '</div>';
-        if (reemb) h += '<div class="mov-reembolso">Reembolso Nestor · ' + reemb + '</div>';
+      var t = item.data;
+      var id = t.ID;
+      var esDev = item.tipo === 'dev';
+      var cuotas = parseInt(t.Cuotas||1);
+      var interes = parseFloat(t.Interes||0);
+      var valor = Number(t.Valor||0);
+      var cuotaVal = cuotas <= 1 ? Math.abs(valor) : calcCuota(Math.abs(valor), cuotas, interes);
+      var saldo = cuotas <= 1 ? 0 : calcSaldoPendiente(valor, cuotas, interes, 1);
+      var r = String(t.Reembolso_Nestor||'');
+      var reemb = (r && r !== 'No') ? r : '';
+
+      var h = '<div class="mov-card" style="' + (cuotas > 1 ? 'border-left:3px solid var(--rose-deep)' : '') + '">';
+      h += '<div class="mov-dot ' + (esDev ? 'ing' : (cuotas > 1 ? 'warn' : 'gas')) + '"></div>';
+      h += '<div class="mov-body">';
+      h += '<div class="mov-desc">' + (t.Descripcion||'') + '</div>';
+      h += '<div class="mov-meta">' + item.fecha + (cuotas > 1 ? ' · ' + cuotas + ' cuotas · ' + interes + '% anual' : '') + '</div>';
+      if (!esDev && cuotas > 1) {
+        h += '<div style="font-size:11px;margin-top:3px;display:flex;gap:10px;flex-wrap:wrap">';
+        h += '<span style="color:var(--ink-soft)">Cuota: <strong style="color:var(--rose-dark)">' + fmt(cuotaVal) + '</strong></span>';
+        h += '<span style="color:var(--ink-soft)">Saldo próx: <strong style="color:var(--rose-dark)">' + fmt(saldo) + '</strong></span>';
         h += '</div>';
-        h += '<div class="mov-valor gas">' + fmt(t.Valor) + '</div>';
-        h += '<button class="del-btn" data-deltarjeta="' + t.ID + '">&#215;</button>';
-        h += '</div>';
-        return h;
-      } else {
-        var d = item.data;
-        var h = '<div class="mov-card" style="border-left:3px solid var(--rose-deep)">';
-        h += '<div class="mov-dot warn"></div>';
-        h += '<div class="mov-body">';
-        h += '<div class="mov-desc">' + d.nombre + '</div>';
-        h += '<div class="mov-meta">' + item.fecha;
-        if (d.interes > 0) h += ' · ' + d.interes + '% anual';
-        h += '</div>';
-        h += '<div style="font-size:11px;margin-top:3px;display:flex;gap:8px;flex-wrap:wrap">';
-        h += '<span style="color:var(--ink-soft)">Cuota cobrada: <strong style="color:var(--rose-dark)">' + fmt(d.cuotaActual) + '</strong></span>';
-        h += '<span style="color:var(--ink-soft)">Saldo pendiente: <strong style="color:var(--rose-dark)">' + fmt(d.saldoPendiente) + '</strong></span>';
-        if (d.urgente) h += '<span style="background:var(--alta-bg);color:var(--rose-dark);font-size:10px;padding:1px 7px;border-radius:8px;font-weight:500">Próximo mes pago total</span>';
-        h += '</div>';
-        h += '</div>';
-        h += '<div class="mov-valor warn">' + fmt(d.valorTotal) + '</div>';
-        h += '</div>';
-        return h;
       }
+      if (esDev) h += '<div style="font-size:11px;color:var(--ciclo-text);margin-top:2px">Devolución / abono</div>';
+      if (reemb) h += '<div class="mov-reembolso">Reembolso Néstor · ' + reemb + '</div>';
+      h += '</div>';
+      h += '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">';
+      h += '<div class="mov-valor ' + (esDev ? 'ing' : (cuotas > 1 ? 'warn' : 'gas')) + '">' + (esDev ? '-' : '') + fmt(Math.abs(valor)) + '</div>';
+      h += '<button class="edit-btn" data-edittarjeta="' + id + '" title="Editar">&#9998;</button>';
+      h += '<button class="del-btn" data-deltarjeta="' + id + '">&#215;</button>';
+      h += '</div>';
+      h += '</div>';
+      return h;
     }).join('');
   }
 
-  var fmtDate = function(d) { return d.toLocaleDateString('es-CO',{day:'numeric',month:'short'}); };
+  var fmtDate = function(dd) { return dd.toLocaleDateString('es-CO',{day:'numeric',month:'short'}); };
 
-  var bannersHTML = bannerHTML('CICLO ACTUAL', totalAct, abonadoAct, pendienteAct, fmtDate(inicioAct), fmtDate(finAct), mesPagoAct, '');
+  var bannersHTML = bannerHTML('CICLO ACTUAL', totalCuotasAct, abonadoAct, pendienteAct, fmtDate(inicioAct), fmtDate(finAct), mesPagoAct, '');
   if (anteriorPendiente) {
-    bannersHTML += bannerHTML('CICLO ANTERIOR · PENDIENTE DE PAGO', totalAnt, abonadoAnt, pendienteAnt, fmtDate(inicioAnt), fmtDate(finAnt), mesPagoAnt, '#f0c8cc');
+    bannersHTML += bannerHTML('CICLO ANTERIOR · PENDIENTE DE PAGO', totalCuotasAnt, abonadoAnt, pendienteAnt, fmtDate(inicioAnt), fmtDate(finAnt), mesPagoAnt, '#f0c8cc');
   }
 
   document.getElementById('tarjeta-banners').innerHTML = bannersHTML;
-  // Diferidas solo se muestran en el ciclo actual
-  document.getElementById('tarjeta-list').innerHTML =
-    buildMovList(gastosAct, true) +
-    (anteriorPendiente ? '<div class="section-label" style="margin-top:12px">CICLO ANTERIOR</div>' + buildMovList(gastosAnt, false) : '');
+
+  var listHTML = cardsHTML(comprasAct, devAct);
+  if (anteriorPendiente) {
+    listHTML += '<div class="section-label" style="margin-top:14px">CICLO ANTERIOR</div>' + cardsHTML(comprasAnt, devAnt);
+  }
+  document.getElementById('tarjeta-list').innerHTML = listHTML;
+
   document.getElementById('tarjeta-list').querySelectorAll('[data-deltarjeta]').forEach(function(el){
     el.addEventListener('click', function(){ deleteGastoTarjeta(el.dataset.deltarjeta); });
   });
+  document.getElementById('tarjeta-list').querySelectorAll('[data-edittarjeta]').forEach(function(el){
+    el.addEventListener('click', function(){
+      var t = tarjeta.find(function(x){ return String(x.ID)===el.dataset.edittarjeta; });
+      if (!t) return;
+      document.getElementById('modal-tarjeta-title').textContent = 'Editar compra';
+      document.getElementById('t-desc').value = t.Descripcion||'';
+      document.getElementById('t-valor').value = Math.abs(Number(t.Valor||0));
+      document.getElementById('t-fecha').value = getDateISO(t.Fecha||'');
+      document.getElementById('t-cuotas').value = String(t.Cuotas||1);
+      document.getElementById('t-interes').value = t.Interes||28.75;
+      document.getElementById('t-reembolso').value = t.Reembolso_Nestor||'No';
+      document.getElementById('t-edit-id').value = el.dataset.edittarjeta;
+      updateCuotaPreview();
+      document.getElementById('overlay-tarjeta').classList.add('open');
+    });
+  });
+}
+
+function updateCuotaPreview() {
+  var valor = parseFloat(document.getElementById('t-valor').value)||0;
+  var cuotas = parseInt(document.getElementById('t-cuotas').value)||1;
+  var interes = parseFloat(document.getElementById('t-interes').value)||0;
+  var preview = document.getElementById('t-cuota-preview');
+  if (valor <= 0 || cuotas <= 1) { preview.style.display='none'; return; }
+  var cuotaVal = calcCuota(valor, cuotas, interes);
+  var saldo = calcSaldoPendiente(valor, cuotas, interes, 1);
+  var interesEnPesos = cuotaVal * cuotas - valor;
+  preview.style.display = 'block';
+  preview.innerHTML = '💳 Cuota mensual: <strong>' + fmt(cuotaVal) + '</strong> &nbsp;|&nbsp; Saldo próximo ciclo: <strong>' + fmt(saldo) + '</strong> &nbsp;|&nbsp; Total intereses: <strong>' + fmt(interesEnPesos) + '</strong>';
 }
 
 function initTarjetaModal() {
-  document.getElementById('btn-cancel-tarjeta').addEventListener('click', function(){ closeOverlay('overlay-tarjeta'); });
+  document.getElementById('btn-cancel-tarjeta').addEventListener('click', function(){
+    closeOverlay('overlay-tarjeta');
+    document.getElementById('t-edit-id').value='';
+    document.getElementById('modal-tarjeta-title').textContent='Nueva compra';
+  });
   initOverlay('overlay-tarjeta');
+
+  ['t-valor','t-cuotas','t-interes'].forEach(function(id){
+    document.getElementById(id).addEventListener('input', updateCuotaPreview);
+  });
+
   document.getElementById('btn-save-tarjeta').addEventListener('click', function(){
-    var desc = document.getElementById('t-desc').value.trim();
+    var desc  = document.getElementById('t-desc').value.trim();
     var valor = document.getElementById('t-valor').value;
     var fecha = document.getElementById('t-fecha').value;
-    if (!desc || !valor || !fecha) { showToast('Completa todos los campos'); return; }
-    addGastoTarjeta({descripcion:desc, valor:Number(valor), fecha:fecha, reembolso:document.getElementById('t-reembolso').value});
+    var cuotas = document.getElementById('t-cuotas').value;
+    var interes = document.getElementById('t-interes').value || '28.75';
+    var reembolso = document.getElementById('t-reembolso').value;
+    var editId = document.getElementById('t-edit-id').value;
+    if (!desc || !valor || !fecha) { showToast('Completa descripción, valor y fecha'); return; }
+    var d = {descripcion:desc, valor:Number(valor), fecha:fecha, cuotas:cuotas, interes:interes, reembolso:reembolso};
+    if (editId) {
+      editGastoTarjeta(editId, d);
+    } else {
+      addGastoTarjeta(d);
+    }
     closeOverlay('overlay-tarjeta');
     document.getElementById('t-desc').value='';
     document.getElementById('t-valor').value='';
+    document.getElementById('t-edit-id').value='';
+    document.getElementById('modal-tarjeta-title').textContent='Nueva compra';
+    document.getElementById('t-cuota-preview').style.display='none';
   });
 }
 
@@ -1127,6 +1022,7 @@ function initAbonoModal() {
     document.getElementById('a-valor').value='';
   });
 }
+
 
 // CUENTAS
 function fetchCuentas() {
