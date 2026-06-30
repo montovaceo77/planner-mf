@@ -980,6 +980,10 @@ function renderTarjeta() {
   var totalAct  = gastosAct.reduce(function(s,t){ return s+Number(t.Valor||0); }, 0);
   var totalAnt  = gastosAnt.reduce(function(s,t){ return s+Number(t.Valor||0); }, 0);
 
+  // Saldos pendientes de diferidas = lo que Bancolombia incluye en el pago total
+  var totalSaldosDiferidas = DIFERIDAS.reduce(function(s,d){ return s + d.saldoPendiente; }, 0);
+  totalAnt = totalAnt + totalSaldosDiferidas;
+
   function abonadoEnRango(desde, hasta) {
     return abonos.filter(function(a){
       var f = getDateISO(a.Fecha||a.fecha||'');
