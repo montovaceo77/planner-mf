@@ -395,7 +395,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
 
 <script>
 var WS = 'https://script.google.com/macros/s/AKfycbyagXxarrH6332Nz1jafIGS3CJKT3eMCBvQqTdyNC6eesn_QPsFjgqIdJYAdMv2piDEUw/exec';
-var tasks = [], tarjeta = [], cuentas = [], abonos = [];
+var tasks = [], tarjeta = [], cuentas = [], abonos = [], abonosNestor = [];
 var taskFilter = 'todas', expanded = {};
 var gastosTab = 'tarjeta', cuentaTab = 'Confiar';
 var activeNav = 'planner';
@@ -480,6 +480,7 @@ function initNav() {
         if (!tarjeta.length) fetchTarjeta();
         if (!cuentas.length) fetchCuentas();
         if (!abonos.length) fetchAbonos();
+        if (!abonosNestor.length) fetchAbonosNestor();
         renderGastos();
       }
     });
@@ -727,6 +728,13 @@ function fetchAbonos() {
     abonos = Array.isArray(data) ? data : [];
     renderTarjeta();
   }).catch(function(){ abonos = []; });
+}
+
+function fetchAbonosNestor() {
+  fetch(WS + '?action=getAbonosNestor').then(function(r){ return r.json(); }).then(function(data) {
+    abonosNestor = Array.isArray(data) ? data : [];
+    renderNestor();
+  }).catch(function(){ abonosNestor = []; });
 }
 
 function addGastoTarjeta(d) {
@@ -1132,13 +1140,18 @@ function renderNestor() {
 
   var totalTarjeta = tarjetaPend.reduce(function(s,t){ return s+Number(t.Valor||0); }, 0);
   var totalCuentas = cuentasPend.reduce(function(s,c){ return s+Number(c.Valor||0); }, 0);
-  var totalGeneral = totalTarjeta + totalCuentas;
+  var totalBruto = totalTarjeta + totalCuentas;
+  var totalAbonado = abonosNestor.reduce(function(s,a){ return s+Number(a.Valor||a.valor||0); }, 0);
+  var totalGeneral = Math.max(0, totalBruto - totalAbonado);
 
   var html = '<div class="nestor-total">';
   html += '<div class="ciclo-label">TOTAL QUE TE DEBE NESTOR</div>';
   html += '<div class="nestor-n">' + fmt(totalGeneral) + '</div>';
   if (totalTarjeta > 0 || totalCuentas > 0) {
     html += '<div class="nestor-sub">Tarjeta: ' + fmt(totalTarjeta) + ' &nbsp;|&nbsp; Cuentas: ' + fmt(totalCuentas) + '</div>';
+    if (totalAbonado > 0) {
+      html += '<div class="nestor-sub" style="color:var(--ciclo-text)">Abonado: ' + fmt(totalAbonado) + '</div>';
+    }
   }
   if (totalGeneral > 0) {
     html += '<div style="display:flex;gap:8px;margin-top:1rem">';
@@ -1174,10 +1187,12 @@ function renderNestor() {
       var valorInput = document.getElementById('nestor-abono-valor');
       var valor = parseFloat(valorInput ? valorInput.value : 0);
       if (!valor || valor <= 0) { showToast('Ingresa el valor del abono'); return; }
-      // Register as abono in cuentas Bancolombia
-      addAbono({valor: valor, fecha: new Date().toISOString().split('T')[0]});
+      var fecha = new Date().toISOString().split('T')[0];
+      abonosNestor.push({ID: Date.now(), Fecha: fecha, Valor: valor});
       if (valorInput) valorInput.value = '';
       showToast('Abono de Néstor registrado');
+      sendToServer({action: 'addAbonoNestor', fecha: fecha, valor: valor});
+      renderNestor();
     });
   }
 
