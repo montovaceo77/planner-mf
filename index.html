@@ -1141,7 +1141,11 @@ function renderNestor() {
     html += '<div class="nestor-sub">Tarjeta: ' + fmt(totalTarjeta) + ' &nbsp;|&nbsp; Cuentas: ' + fmt(totalCuentas) + '</div>';
   }
   if (totalGeneral > 0) {
-    html += '<button class="btn-nestor" id="btn-abono-nestor">Abono Nestor</button>';
+    html += '<div style="display:flex;gap:8px;margin-top:1rem">';
+    html += '<input type="number" id="nestor-abono-valor" placeholder="Valor abono" style="flex:1;font-size:14px;font-family:DM Sans,sans-serif;background:var(--rose-pale);border:1px solid var(--border);border-radius:8px;padding:9px 12px;outline:none;color:var(--ink)" />';
+    html += '<button class="btn-nestor" id="btn-abono-nestor" style="flex:0 0 auto;width:auto;padding:11px 20px">Registrar abono</button>';
+    html += '</div>';
+    html += '<button id="btn-nestor-todo" style="width:100%;margin-top:8px;padding:9px;background:transparent;border:1px solid var(--border);border-radius:10px;font-size:13px;font-family:DM Sans,sans-serif;color:var(--ink-mid);cursor:pointer">Marcar todo como recibido</button>';
   }
   html += '</div>';
 
@@ -1167,7 +1171,20 @@ function renderNestor() {
   var btnAbono = document.getElementById('btn-abono-nestor');
   if (btnAbono) {
     btnAbono.addEventListener('click', function(){
-      if (!confirm('Nestor te pago ' + fmt(totalGeneral) + '. Marcar todo como recibido?')) return;
+      var valorInput = document.getElementById('nestor-abono-valor');
+      var valor = parseFloat(valorInput ? valorInput.value : 0);
+      if (!valor || valor <= 0) { showToast('Ingresa el valor del abono'); return; }
+      // Register as abono in cuentas Bancolombia
+      addAbono({valor: valor, fecha: new Date().toISOString().split('T')[0]});
+      if (valorInput) valorInput.value = '';
+      showToast('Abono de Néstor registrado');
+    });
+  }
+
+  var btnTodo = document.getElementById('btn-nestor-todo');
+  if (btnTodo) {
+    btnTodo.addEventListener('click', function(){
+      if (!confirm('Marcar todo como recibido (' + fmt(totalGeneral) + ')?')) return;
       tarjeta.forEach(function(t){
         var r = String(t.Reembolso_Nestor||'').toLowerCase();
         if (r === 'si' || r === 'si, pendiente') {
@@ -1182,7 +1199,7 @@ function renderNestor() {
           sendToServer({action:'updateReembolsoCuenta', id:c.ID, value:'Recibido'});
         }
       });
-      showToast('Abono registrado');
+      showToast('Todo marcado como recibido');
       renderNestor();
     });
   }
