@@ -827,14 +827,18 @@ function renderTarjeta() {
   function cicloProximaCuota(t) {
     var fechaISO = getDateISO(t.Fecha || t.fecha || '');
     if (!fechaISO) return '';
-    var partes = fechaISO.split('-');
-    var anio = parseInt(partes[0]);
-    var mes  = parseInt(partes[1]) - 1; // 0-indexed
+    var ckCompra = cicloKey(fechaISO);
+    var anio = parseInt(ckCompra.split('-')[0]);
+    var mes  = parseInt(ckCompra.split('-')[1]); // 1-indexed
     var pagadas = parseInt(t.CuotasPagadas || 0);
-    // La primera cuota cae en el ciclo del mes siguiente a la compra
-    // + pagadas meses adicionales por cada cuota ya cobrada
-    var fechaProxima = new Date(anio, mes + 1 + pagadas, 1);
-    return cicloKey(fechaProxima.toISOString().split('T')[0]);
+    // Primera cuota = cicloKey(compra) + 1 mes
+    // Próxima cuota = cicloKey(compra) + 1 + pagadas
+    var totalMes = (mes - 1) + 1 + pagadas;
+    var anioP = anio + Math.floor(totalMes / 12);
+    var mesP  = totalMes % 12 + 1;
+    // Usar día 15 para que cicloKey lo asigne al mismo mes
+    var proximaISO = anioP + '-' + String(mesP).padStart(2,'0') + '-15';
+    return cicloKey(proximaISO);
   }
 
   // Una compra aparece en un ciclo si su próxima cuota cae en ese ciclo
