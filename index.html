@@ -1039,6 +1039,8 @@ function initAbonoModal() {
     document.getElementById('a-valor').value='';
   });
 }
+
+function fetchTarjeta() {
   fetch(WS + '?action=getTarjeta').then(function(r){ return r.json(); }).then(function(data) {
     tarjeta = Array.isArray(data) ? data : [];
     renderTarjeta();
