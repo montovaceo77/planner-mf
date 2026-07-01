@@ -998,7 +998,9 @@ function initTarjetaModal() {
     var reembolso  = document.getElementById('t-reembolso').value;
     var editId     = document.getElementById('t-edit-id').value;
 
-    if (!desc || !valor || !fecha) { showToast('Completa descripción, valor y fecha'); return; }
+    if (!desc || !valor) { showToast('Completa descripción y valor'); return; }
+    if (!fecha) { fecha = new Date().toISOString().split('T')[0]; }
+    if (!fechaCuota) { fechaCuota = fecha; }
 
     // Si valor negativo → devolución, usar fecha como fechaCuota
     var esDevolucion = Number(valor) < 0;
